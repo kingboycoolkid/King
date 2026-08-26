@@ -1,0 +1,26 @@
+# scrollcraft build output. A single build with video legs runs 300MB+, and a
+# working lab directory can reach several GB. The fingerprint registry
+# (scrollcraft/FINGERPRINTS.md) is deliberately NOT ignored: it is the record
+# that keeps each new build from repeating an earlier one.
+scrollcraft/builds/
+scrollcraft/lab/
+*.mp4
+*.mov
+*.webm
+!scroll-craft/media/*.webp
+
+# Secrets
+.env
+.env.local
+*.key
+
+# Node
+node_modules/
+package-lock.json
+
+# Claude Code local overrides
+.claude/settings.local.json
+
+# OS
+.DS_Store
+Thumbs.db
