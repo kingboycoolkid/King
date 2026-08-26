@@ -311,3 +311,83 @@ Two other defects the shoot caught and the fix for each:
   count is the place to re-check first.
 - **Any real content.** Every photograph is a placeholder frame and every quote
   is an instruction. The page is structurally finished and editorially unfinished.
+
+
+---
+
+# Second pass, after the network policy opened
+
+`akaladeconsulting.com` and Google Fonts became reachable, so the placeholder
+copy is gone. Every word on the page is now either Akalade's own or written
+from Akalade's own.
+
+## What came off the real site
+
+| Source page | What it gave |
+|---|---|
+| Home | The real tagline, **"Better Connections, Brighter Futures"**, which replaced the invented one. The welcome copy: direct marketing and customer acquisition, a *vibrant and high-energy team*, "you won't just find a job, you'll uncover a community". |
+| About | Mission, philosophy, services, verbatim. |
+| Our Management | **Kevin Tomczyk, Founder and CEO**, and his own first-person account: six years as a yoga teacher, into sales with no experience, *from trainee to trainer*, then founder. |
+| Careers | The real role, **Account Manager**, with the company's own responsibilities and requirements. |
+| Contact | 100 Quentin Roosevelt Blvd, (631) 610-8975, arieanna@akaladeconsulting.com. |
+
+## What changed structurally, and why
+
+**The ladder is now sourced rather than invented.** The first pass guessed five
+rung names. The rungs are now the four stages Akalade names in its own copy:
+Trainee, Account Manager, Trainer, and running a team. Three of those four come
+straight out of the founder's paragraph.
+
+**Chapter five became the payoff for chapter three.** Its heading is now
+*"He started at rung one."* The peak asks the reader to imagine climbing;
+five shows them the person who climbed it, in his own words. The founder story
+was the best writing the company already owned and it was buried on a
+third-level page.
+
+**Chapter two got real.** The four numbered items are the company's own
+responsibilities and requirements, not invented hardships. The pay block is
+still the one placeholder that matters, and still needs Akalade's numbers.
+
+## Typography is self-hosted now
+
+Google Fonts resolved intermittently through the egress proxy, which made the
+verification pass non-deterministic: one run rendered Archivo, the next fell
+back to `system-ui` and reported a failed request. Both families are now
+downloaded into `assets/fonts/` as a single variable file each, referenced from
+`assets/fonts.css`. The page makes **no third-party request at render time**,
+verifies identically every run, and loads faster for a real visitor.
+
+## Second-pass defects the shoot caught
+
+- **The title page overflowed the fold.** The real tagline is 37 characters
+  against the placeholder's 20, and at the `4xl` rung it ran to three lines and
+  pushed the subtext below the viewport. The hero is capped at `5.4rem` and
+  `16ch`, landing on two lines at every width.
+- **`text-wrap: balance` broke the peak's line** into four short ragged lines.
+  Changed to `pretty` at a wider measure.
+- **The page ran long on a phone**, 15.2 viewport-heights against a ceiling of
+  14. Trailing section padding is halved below 700px, and the two act spans came
+  down slightly. Now **13.0 desktop, 14.7 mobile**.
+
+**The mobile 14.7 is a knowing overshoot of 0.7.** Getting under 14 meant cutting
+the peak's span or the rail's, and the harness reports no dead scroll at any
+position, so the length is carrying real content rather than padding. Trimming
+the peak to satisfy a number would have cost the thing the page is for.
+
+## Still outstanding
+
+1. **Photography.** `static.wixstatic.com` is not in the allowlist, so the ~18
+   photographs on the live site could not be downloaded. The slots are designed
+   and sized; adding that one host is all that is needed.
+2. **Employee quotes.** Still four designed slots and no real quotes. Unchanged
+   from the first pass, and still not to be scraped off Indeed.
+3. **Pay.** Still the one block that has to come from Akalade.
+4. **Management team.** Only the founder has a bio on the live site.
+
+## kie.ai balance
+
+**80 credits.** At published rates that is two stills and no video, against
+roughly 520 for a six-act generated page. Not enough to matter here, and nothing
+was spent: this is a bring-your-own-assets build, which is the right route for a
+recruiting page anyway. Generated photographs of a team that does not exist is
+exactly what this page must not do.

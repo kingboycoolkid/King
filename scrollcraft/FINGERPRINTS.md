@@ -31,7 +31,7 @@ changes only grammar and world will fail it.
 
 | Build | Grammar | Nav | Hero | Act shape | Close | Signature move |
 |---|---|---|---|---|---|---|
-| **akalade** | Chaptered editorial | Margin folio, chapter number and title, no fixed bar | Title page, type only, no media above the fold | 7 chapters, one pinned, one pan, rest flow; peak at 4 of 7; 13.2vh | Colophon plate, CTA as running text | The Rung Line |
+| **akalade** | Chaptered editorial | Margin folio, chapter number and title, no fixed bar | Title page, type only, no media above the fold | 7 chapters, one pinned, one pan, rest flow; peak at 4 of 7; 13.0vh desktop | Colophon plate, CTA as running text | The Rung Line |
 
 ---
 

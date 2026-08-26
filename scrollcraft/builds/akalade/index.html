@@ -3,12 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Akalade · Garden City</title>
+<title>Akalade · Better connections, brighter futures</title>
 <meta name="description" content="A sales and marketing company in Garden City, New York. What the job is, what the path looks like, and who you would be working for.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%2307090C'/><rect x='9' y='20' width='14' height='2.5' fill='%23FF6A3D'/></svg>">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Geist:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="preload" href="assets/fonts/archivo-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/geist-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="assets/fonts.css">
 <link rel="stylesheet" href="scrollcraft.css">
 <style>
   /* ======================================================================
@@ -112,7 +112,14 @@
     text-wrap: balance;
     color: var(--sc-ink);
   }
-  .ak-h--title { font-size: var(--sc-t-4xl); line-height: var(--sc-leading-none); }
+  /* The real tagline is 37 characters, which ran to three lines at the 4xl
+     rung and pushed the subtext off the fold. A hero that overflows is a
+     hero that failed. Capped so it lands on two lines at every width. */
+  .ak-h--title {
+    font-size: clamp(2.5rem, 1.4rem + 4.6vw, 5.4rem);
+    line-height: var(--sc-leading-none);
+    max-width: 16ch;
+  }
   .ak-h--ch    { font-size: var(--sc-t-2xl); }
   .ak-p {
     font-family: var(--sc-font-text);
@@ -186,14 +193,14 @@
     letter-spacing: var(--sc-track-snug);
     color: var(--sc-ink);
   }
-  .title__body { max-width: 22ch; }
+  .title__body { max-width: none; }
   .title__sub {
     margin-top: var(--sc-5);
     font-family: var(--sc-font-text);
     font-size: var(--sc-t-lg);
     line-height: 1.45;
     color: var(--sc-ink-soft);
-    max-width: 34ch;
+    max-width: 40ch;
     text-wrap: pretty;
   }
   .title__foot {
@@ -202,6 +209,15 @@
   }
   @media (max-width: 700px) {
     .ak-h--title { font-size: var(--sc-t-2xl); }
+
+    /* Stacked, every chapter pays a full section padding twice over: once
+       trailing its own grid and once leading the next chapter's heading. On
+       a phone that is a scroll tax, and it pushed the page past the 14
+       viewport-height ceiling. The leading gap is the one that carries the
+       boundary, so the trailing one gives way. */
+    .room__grid, .work__spread, .who__grid { padding-bottom: var(--sc-7); }
+    .ak-chapter-head { margin-bottom: var(--sc-5); }
+    .colophon { min-height: 62svh; }
   }
 
   /* ========================================================= 1 the room */
@@ -291,7 +307,7 @@
     will-change: transform;
   }
   .rung {
-    --d: calc(var(--sc-p, 0) * 5 - var(--i));
+    --d: calc(var(--sc-p, 0) * 4 - var(--i));
     --k: clamp(0, var(--d), 1);            /* 0 ahead of you, 1 behind you */
     position: relative;
     padding-block: var(--sc-3);
@@ -335,8 +351,8 @@
     line-height: var(--sc-leading-tight);
     letter-spacing: var(--sc-track-snug);
     color: var(--sc-ink);
-    text-wrap: balance;
-    max-width: 28ch;
+    text-wrap: pretty;
+    max-width: 34ch;
     min-height: 3.4em;          /* reserve the tallest line's room so the
                                    swap does not shift the rule under it */
   }
@@ -389,7 +405,7 @@
      opening content already present. */
   @media (prefers-reduced-motion: no-preference) {
     .rail__item[data-s] {
-      --sd: calc(var(--sc-p, 0) * 4.2 - var(--s));
+      --sd: calc(var(--sc-p, 0) * 4.0 - var(--s));
       --sk: clamp(0, var(--sd), 1);
       opacity: calc(0.55 + var(--sk) * 0.45);
       transform: translateY(calc((1 - var(--sk)) * 0.9rem));
@@ -459,15 +475,13 @@
 <main>
 
   <!-- =============================================== 0 · TITLE PAGE ===== -->
-  <!-- Grammar: a title page, not a hero. Type on the ground, no media above
-       the fold, copy anchored lead. Four text elements, no more. -->
   <section class="ch ch--title" data-ch="00" data-ch-title="Title">
     <div class="ak-wrap title">
       <p class="title__mark">Akalade</p>
 
       <div class="title__body" data-sc-in data-sc-stagger="70">
         <h1 class="ak-h ak-h--title" data-sc-kinetic="lines">
-          Your success counts.
+          Better connections, brighter futures.
         </h1>
         <p class="title__sub">
           A sales and marketing company in Garden City, New York. This page is
@@ -497,12 +511,12 @@
           <div class="ak-ph ak-ph--32" role="img"
                aria-label="Placeholder for a photograph of the Garden City floor during a shift">
             <span class="ak-ph__spec">
-              <b>Placeholder</b>
-              assets/room.jpg · 3:2 · the floor mid shift, available light, nobody posing
+              <b>Photograph pending</b>
+              3:2 · the floor mid shift, available light, nobody posing
             </span>
           </div>
           <figcaption>
-            <b>The floor, Quentin Roosevelt Boulevard.</b>
+            <b>Quentin Roosevelt Boulevard, Garden City.</b>
             Most of the day happens standing up, inside a retail space, in front
             of somebody who did not plan on talking to you.
           </figcaption>
@@ -510,15 +524,16 @@
 
         <div data-sc-in data-sc-stagger="70">
           <p class="ak-p">
-            Akalade runs face to face sales and customer acquisition for telecom
-            brands, inside large format retail. That is the whole of it. There
-            is no phone bank, no script read from a screen, and no version of
-            this job that happens sitting down.
+            Akalade specialises in direct marketing and customer acquisition.
+            The team is, in the company's own words,
+            <strong>vibrant and high energy</strong>, and that is not a
+            decoration: the work is face to face, on a floor, with people who
+            came in to buy something else.
           </p>
           <p class="ak-p" style="margin-top:var(--sc-5)">
-            <strong>The reason people stay is the room.</strong> The reason
-            people leave is usually the same room on a bad week. Both are true,
-            and the next chapter is the one that says which is which.
+            The company says you will not just find a job here, you will find a
+            community that champions growth. That is a large claim. The next
+            chapter is the one that has to earn it.
           </p>
         </div>
       </div>
@@ -526,7 +541,6 @@
   </section>
 
   <!-- ============================================ 2 · THE WORK, PLAINLY = -->
-  <!-- Hard cut to paper. The chapter that earns everything after it. -->
   <section class="ch ch--work" data-ch="02" data-ch-title="The work">
     <div class="ak-wrap">
       <header class="ak-chapter-head" data-sc-in data-sc-stagger="60">
@@ -539,10 +553,10 @@
         <aside class="work__aside" data-sc-in>
           <figure style="margin:0">
             <div class="ak-ph ak-ph--45" role="img"
-                 aria-label="Placeholder for a close photograph of hands and a device">
+                 aria-label="Placeholder for a close photograph of an account manager mid conversation">
               <span class="ak-ph__spec">
-                <b>Placeholder</b>
-                assets/work-01.jpg · 4:5 · hands and a device, close, working light
+                <b>Photograph pending</b>
+                4:5 · an account manager mid conversation, close, working light
               </span>
             </div>
             <figcaption>Day one looks like this, and so does day two hundred.</figcaption>
@@ -551,41 +565,42 @@
 
         <div data-sc-in data-sc-stagger="70">
           <p class="ak-p">
-            Every candidate who reads a careers page already knows it is going to
-            be flattering. So here is the shape of the work first, and the case
-            for it afterwards.
+            The role is <strong>Account Manager</strong>. Akalade describes it as
+            connecting with customers personally to provide tailored solutions.
+            Here is what that actually asks of you, taken from the job as the
+            company writes it.
           </p>
 
           <ul class="work__list" style="margin-top:var(--sc-6)">
             <li>
               <span class="work__k">01</span>
-              <span class="work__v">You are on your feet, in a store, for a full shift.
-                <span>Standing, moving, approaching people who did not come in to see you.</span></span>
+              <span class="work__v">Presenting and promoting to prospective clients.
+                <span>In person, on a retail floor, to people who did not come in expecting you.</span></span>
             </li>
             <li>
               <span class="work__k">02</span>
-              <span class="work__v">Most conversations end in no.
-                <span>The skill being built is what you do with the next one, thirty seconds later.</span></span>
+              <span class="work__v">Hitting sales targets, and carrying part of the team's.
+                <span>The number is visible. That cuts both ways, and it is the honest part of the job.</span></span>
             </li>
             <li>
               <span class="work__k">03</span>
-              <span class="work__v">Progression is measured, not granted.
-                <span>Chapter three is the whole ladder, and the numbers behind each rung are set by the client, not by mood.</span></span>
+              <span class="work__v">Regular training sessions, not occasional ones.
+                <span>Akalade's own founder went from trainee to trainer here. Chapter five is that story.</span></span>
             </li>
             <li>
               <span class="work__k">04</span>
-              <span class="work__v">The first months are coached, closely.
-                <span>That is the part current and former employees are most consistent about in public reviews.</span></span>
+              <span class="work__v">High school diploma or equivalent. Degree preferred, not required.
+                <span>What is required: communication, high energy, and responding fast when something is urgent.</span></span>
             </li>
           </ul>
 
           <div class="ak-note">
             <b>This block needs Akalade's own words</b>
             Pay structure goes here, in plain numbers: base, commission, and a
-            realistic first year range. Say it here, in the second chapter,
-            before the page has asked the reader for anything. A candidate who
-            finds the number here trusts the rest of the page. A candidate who
-            finds it somewhere else does not.
+            realistic first year range. Say it in chapter two, before the page
+            has asked the reader for anything. A candidate who finds the number
+            here trusts the rest of the page. A candidate who finds it somewhere
+            else does not.
           </div>
         </div>
       </div>
@@ -593,11 +608,11 @@
   </section>
 
   <!-- ================================================== 3 · THE PATH ==== -->
-  <!-- PEAK. The only pinned chapter, the largest span, and the one bespoke
-       interaction on the page. The stage is grounded at p=0 by the track
-       itself, so nothing waits on a cue to appear. -->
+  <!-- PEAK. The rungs are the stages Akalade names in its own copy: the
+       founder's trainee to trainer to founder arc, plus the one job title
+       the careers page actually advertises. -->
   <section class="ch ch--path" data-ch="03" data-ch-title="The path"
-           data-sc-act="pin" data-sc-span="4.4">
+           data-sc-act="pin" data-sc-span="4.1">
     <div data-sc-stage>
       <div class="ak-wrap path__stage">
         <header>
@@ -611,26 +626,25 @@
             <span class="track__spine" aria-hidden="true"></span>
             <span class="track__me" data-me aria-hidden="true"></span>
             <ol style="list-style:none;margin:0;padding:0" data-rungs>
-              <li class="rung" style="--i:0"><span class="rung__n">01</span>Account representative</li>
-              <li class="rung" style="--i:1"><span class="rung__n">02</span>Senior representative</li>
-              <li class="rung" style="--i:2"><span class="rung__n">03</span>Team lead</li>
-              <li class="rung" style="--i:3"><span class="rung__n">04</span>Assistant manager</li>
-              <li class="rung" style="--i:4"><span class="rung__n">05</span>Manager</li>
+              <li class="rung" style="--i:0"><span class="rung__n">01</span>Trainee</li>
+              <li class="rung" style="--i:1"><span class="rung__n">02</span>Account manager</li>
+              <li class="rung" style="--i:2"><span class="rung__n">03</span>Trainer</li>
+              <li class="rung" style="--i:3"><span class="rung__n">04</span>Running your own team</li>
             </ol>
           </div>
 
           <div class="say" data-say>
             <p class="say__lead">Where you are</p>
-            <strong class="say__line" data-say-line>Today I am learning the pitch.</strong>
+            <strong class="say__line" data-say-line>Today I am learning how to open a conversation.</strong>
             <div class="say__wipe" aria-hidden="true"></div>
           </div>
         </div>
 
-        <p class="ak-p" data-sc-cue="0.5 1 0.15 0.05" style="max-width:44ch">
-          The rungs are real titles at Akalade. The pace between them is not
-          promised here, because it is set by performance and by what the client
-          needs. Ask about it in the interview, and ask for a name of somebody
-          who did it.
+        <p class="ak-p" data-sc-cue="0.5 1 0.15 0.05" style="max-width:46ch">
+          Those four rungs are the ones Akalade names in its own words. The pace
+          between them is not promised here, because it depends on performance.
+          Ask about it in the interview, and ask for the name of somebody who
+          did it.
         </p>
       </div>
     </div>
@@ -638,7 +652,7 @@
 
   <!-- ================================================ 4 · THE PEOPLE ==== -->
   <section class="ch ch--people" data-ch="04" data-ch-title="The people"
-           data-sc-act="pan" data-sc-span="3.2">
+           data-sc-act="pan" data-sc-span="3">
     <div data-sc-stage>
       <div class="people__rail" data-rail data-sc-pan="0.06">
 
@@ -655,7 +669,7 @@
         <div class="rail__item" data-s="1">
           <figure class="voice">
             <div class="ak-ph ak-ph--11" role="img" aria-label="Placeholder for an employee portrait">
-              <span class="ak-ph__spec"><b>Placeholder</b>assets/team-01.jpg · 1:1</span>
+              <span class="ak-ph__spec"><b>Portrait pending</b>1:1 · eye level</span>
             </div>
             <blockquote class="voice__q">Real quote goes here. Twenty to forty five words, first person, in the words they actually used.</blockquote>
             <figcaption class="voice__who">
@@ -668,7 +682,7 @@
         <div class="rail__item" data-s="2">
           <figure class="voice">
             <div class="ak-ph ak-ph--11" role="img" aria-label="Placeholder for an employee portrait">
-              <span class="ak-ph__spec"><b>Placeholder</b>assets/team-02.jpg · 1:1</span>
+              <span class="ak-ph__spec"><b>Portrait pending</b>1:1 · eye level</span>
             </div>
             <blockquote class="voice__q">Ask this one about the first month specifically. The hardest part, and what changed it.</blockquote>
             <figcaption class="voice__who">
@@ -681,7 +695,7 @@
         <div class="rail__item" data-s="3">
           <figure class="voice">
             <div class="ak-ph ak-ph--11" role="img" aria-label="Placeholder for an employee portrait">
-              <span class="ak-ph__spec"><b>Placeholder</b>assets/team-03.jpg · 1:1</span>
+              <span class="ak-ph__spec"><b>Portrait pending</b>1:1 · eye level</span>
             </div>
             <blockquote class="voice__q">Ask this one what they would tell somebody deciding tonight whether to take the interview.</blockquote>
             <figcaption class="voice__who">
@@ -694,7 +708,7 @@
         <div class="rail__item" data-s="4">
           <figure class="voice">
             <div class="ak-ph ak-ph--11" role="img" aria-label="Placeholder for an employee portrait">
-              <span class="ak-ph__spec"><b>Placeholder</b>assets/team-04.jpg · 1:1</span>
+              <span class="ak-ph__spec"><b>Portrait pending</b>1:1 · eye level</span>
             </div>
             <blockquote class="voice__q">Ask this one about the day they nearly quit, and what the week after that looked like.</blockquote>
             <figcaption class="voice__who">
@@ -706,7 +720,7 @@
 
         <div class="rail__item rail__item--note" data-s="5">
           <div class="ak-note" style="margin-top:var(--sc-6)">
-            <b>Three real people, not three reviews</b>
+            <b>Four real people, not four reviews</b>
             A named colleague with a face and a length of service outweighs any
             number of anonymous star ratings, and it is the version of this
             chapter that survives a candidate checking it.
@@ -718,46 +732,59 @@
   </section>
 
   <!-- ============================================== 5 · WHO RUNS IT ===== -->
+  <!-- The founder's own copy, lightly cut. It is the strongest writing the
+       company already owns, and it is the same ladder as chapter three,
+       walked by the person asking you to climb it. -->
   <section class="ch ch--who" data-ch="05" data-ch-title="Who runs it">
     <div class="ak-wrap">
       <header class="ak-chapter-head" data-sc-in data-sc-stagger="60">
         <hr class="ak-rule">
         <p class="ak-label" style="margin-top:var(--sc-4)">Chapter five</p>
-        <h2 class="ak-h ak-h--ch">Who you would be working for.</h2>
+        <h2 class="ak-h ak-h--ch">He started at rung one.</h2>
       </header>
 
       <div class="who__grid">
         <div class="who__figwrap" data-sc-reveal="left" data-sc-reveal-at="0.08 0.55">
           <figure style="margin:0" data-sc-parallax="0.5">
             <div class="ak-ph ak-ph--45" role="img"
-                 aria-label="Placeholder for a portrait of the chief executive">
+                 aria-label="Placeholder for a portrait of Kevin Tomczyk">
               <span class="ak-ph__spec">
-                <b>Placeholder</b>
-                assets/ceo.jpg · 4:5 · environmental, not studio
+                <b>Portrait pending</b>
+                4:5 · environmental, not studio
               </span>
             </div>
           </figure>
         </div>
 
         <div data-sc-in data-sc-stagger="70">
-          <p class="ak-label">Kevin Tomczyk · Chief executive</p>
+          <p class="ak-label">Kevin Tomczyk · Founder and chief executive</p>
           <p class="ak-p" style="margin-top:var(--sc-4)">
-            Bio goes here, in his own voice, and it should answer one question
-            rather than list a career: what he wants somebody to be able to do
-            after a year here that they could not do before.
+            "I began my professional journey as a yoga teacher, spending six
+            years mastering the art of communication, leadership, and connecting
+            with audiences of all sizes. That foundation gave me the confidence
+            to step into the fast paced world of sales and marketing, starting
+            from scratch with no experience, just a strong work ethic and
+            willingness to learn."
           </p>
           <p class="ak-p" style="margin-top:var(--sc-5)">
-            <strong>Management sits in the same room.</strong> Names, titles and
-            one line each go here, with the same photographic treatment. Keep it
-            to the people a new hire would actually work under in their first
-            six months.
+            "With the support of incredible mentors and a lot of late nights, I
+            worked my way up, developing the skills that would turn me
+            <strong>from trainee to trainer</strong>, and eventually into the
+            founder of my own company."
+          </p>
+          <p class="ak-p" style="margin-top:var(--sc-5)">
+            "Today my mission is to help rising entrepreneurs build their
+            businesses, sharpen their negotiation skills, and skip a few of the
+            stumbles I made along the way. Business is serious, but growth
+            should always come with a spark of curiosity, fun, and forward
+            momentum."
           </p>
 
           <div class="ak-note">
-            <b>Needs the client's copy</b>
-            The founder and management text on the current site can be reused
-            here verbatim. It could not be fetched into this build: the network
-            policy on this environment blocks akaladeconsulting.com.
+            <b>Management team still to come</b>
+            Names, titles and one line each, with the same photographic
+            treatment. Keep it to the people a new hire would actually work
+            under in their first six months.
           </div>
         </div>
       </div>
@@ -765,7 +792,6 @@
   </section>
 
   <!-- ================================================= 6 · COLOPHON ===== -->
-  <!-- The close resolves and holds. Running text, not a button island. -->
   <section class="ch ch--colophon" data-ch="06" data-ch-title="Colophon">
     <div class="ak-wrap colophon">
       <div class="colophon__grid" data-sc-in data-sc-stagger="80">
@@ -774,15 +800,15 @@
 
         <p class="colophon__say">
           If the second chapter did not put you off, that is the useful signal.
-          Write to <a href="mailto:hr@akalade.com">hr@akalade.com</a> and say
-          which chapter you want to ask about.
+          Write to <a href="mailto:arieanna@akaladeconsulting.com">arieanna@akaladeconsulting.com</a>
+          and say which chapter you want to ask about.
         </p>
 
         <div class="colophon__meta">
-          <div><b>Where</b>100 Quentin Roosevelt Blvd, Suite 108<br>Garden City, NY 11530</div>
-          <div><b>Hiring</b><a href="mailto:hr@akalade.com">hr@akalade.com</a></div>
-          <div><b>Company</b>Akalade Inc.<br>New York, established 2023</div>
-          <div><b>This page</b>Draft. Copy and photography pending client review.</div>
+          <div><b>Where</b>100 Quentin Roosevelt Blvd<br>Garden City, NY 11530</div>
+          <div><b>Call</b><a href="tel:+16316108975">(631) 610-8975</a></div>
+          <div><b>Write</b><a href="mailto:arieanna@akaladeconsulting.com">arieanna@akaladeconsulting.com</a></div>
+          <div><b>This page</b>Draft. Photography and employee quotes pending.</div>
         </div>
       </div>
     </div>
@@ -830,11 +856,10 @@
      does. This is the move: not a stack of cards, a sentence being rewritten
      under the reader. */
   var LINES = [
-    "Today I am learning the pitch.",
+    "Today I am learning how to open a conversation.",
     "Today I am the one they send to the hard store.",
-    "Today I am running the morning meeting.",
-    "Today I am accountable for someone else's numbers.",
-    "Today I am training the person who will replace me."
+    "Today I am teaching somebody else to open one.",
+    "Today I am accountable for a team's numbers."
   ];
 
   if (!path || !track || !rungs || !line) return;
