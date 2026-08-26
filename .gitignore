@@ -2,8 +2,12 @@
 # working lab directory can reach several GB. The fingerprint registry
 # (scrollcraft/FINGERPRINTS.md) is deliberately NOT ignored: it is the record
 # that keeps each new build from repeating an earlier one.
-scrollcraft/builds/
+# Build SOURCE (index.html, BRIEF.md, the themed engine copy) is committed:
+# it is the deliverable. Only the heavy working directories are ignored.
 scrollcraft/lab/
+scrollcraft/builds/*/lab/
+scrollcraft/builds/*/out/
+scrollcraft/builds/*/assets/*.mp4
 *.mp4
 *.mov
 *.webm
@@ -24,3 +28,4 @@ package-lock.json
 # OS
 .DS_Store
 Thumbs.db
+scrollcraft/builds/*/serve.log

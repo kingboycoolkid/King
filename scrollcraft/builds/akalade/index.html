@@ -1,0 +1,901 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Akalade · Garden City</title>
+<meta name="description" content="A sales and marketing company in Garden City, New York. What the job is, what the path looks like, and who you would be working for.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%2307090C'/><rect x='9' y='20' width='14' height='2.5' fill='%23FF6A3D'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Geist:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="scrollcraft.css">
+<style>
+  /* ======================================================================
+     Akalade. Precision futurism: cold graphite ground, one warm signal
+     accent, thin rules, measured motion. The accent owns two roles and
+     nothing else: the reader's own position, and the invitation.
+     ====================================================================== */
+  :root {
+    --sc-canvas:      #07090c;
+    --sc-surface:     #0e1218;
+    --sc-ink:         #e9edf2;
+    --sc-ink-soft:    #8b97a6;
+    --sc-accent:      #ff6a3d;
+    --sc-accent-ink:  #0b0e12;
+
+    --sc-font-display: "Archivo", system-ui, sans-serif;
+    --sc-font-text:    "Geist", system-ui, sans-serif;
+
+    --sc-r-sm: 2px; --sc-r-md: 3px; --sc-r-lg: 4px;
+
+    --ak-folio-w: clamp(0rem, 7vw, 8rem);
+    --ak-rule: color-mix(in oklab, var(--sc-ink) 14%, transparent);
+  }
+
+  body { background: var(--sc-canvas); }
+
+  /* Chapters cut hard to their own ground and stay there. No interpolation:
+     a cut is not a gradient, and this grammar exists to refuse the softness. */
+  .ch            { position: relative; background: #07090c; }
+  .ch--room      { background: #0b0e13; }
+  .ch--work      { background: #edeff2; }
+  .ch--path      { background: #06080b; }
+  .ch--people    { background: #0b0e13; }
+  .ch--who       { background: #10141a; }
+  .ch--colophon  { background: #07090c; }
+
+  /* The light chapter re-inks its own subtree. Redefining the token alone
+     does nothing: `color` resolved on <body> and is inherited as a computed
+     value, so the declaration below is what actually re-inks the text. */
+  .ch--work {
+    --sc-ink: #14171c;
+    --sc-ink-soft: #545e6b;
+    --sc-accent: #c8431d;          /* same hue, second lightness, for paper */
+    --ak-rule: color-mix(in oklab, #14171c 16%, transparent);
+    color: var(--sc-ink);
+  }
+
+  /* ------------------------------------------------------------ folio -- */
+  /* Not a nav bar. A running margin folio: where you are in the document,
+     the way a printed feature marks it. Hidden on phones, where the margin
+     does not exist. */
+  .folio {
+    position: fixed; top: 0; left: 0; bottom: 0;
+    width: var(--ak-folio-w);
+    display: none; flex-direction: column; justify-content: center;
+    align-items: center; gap: var(--sc-3);
+    pointer-events: none; z-index: 40;
+    font-family: var(--sc-font-text);
+    font-size: var(--sc-t-xs);
+    letter-spacing: var(--sc-track-wide);
+    text-transform: uppercase;
+    color: var(--sc-ink-soft);
+    mix-blend-mode: difference;
+  }
+  @media (min-width: 1024px) { .folio { display: flex; } }
+  .folio__n { font-variant-numeric: tabular-nums; color: var(--sc-ink); }
+  .folio__t {
+    writing-mode: vertical-rl; text-orientation: mixed;
+    max-height: 42vh; overflow: hidden;
+  }
+  .folio__bar {
+    width: 1px; flex: 0 0 clamp(3rem, 12vh, 7rem);
+    background: var(--ak-rule); position: relative;
+  }
+  .folio__bar::after {
+    content: ""; position: absolute; inset-inline: 0; top: 0;
+    height: calc(var(--ak-doc, 0) * 100%);
+    background: var(--sc-ink);
+  }
+
+  /* ------------------------------------------------------- shared type -- */
+  .ak-wrap {
+    max-width: var(--sc-maxw);
+    margin-inline: auto;
+    padding-inline: var(--sc-gutter);
+    padding-left: max(var(--sc-gutter), var(--ak-folio-w));
+  }
+  .ak-label {
+    font-family: var(--sc-font-text);
+    font-size: var(--sc-t-xs);
+    letter-spacing: var(--sc-track-wide);
+    text-transform: uppercase;
+    color: var(--sc-ink-soft);
+    font-variant-numeric: tabular-nums;
+  }
+  .ak-h {
+    font-family: var(--sc-font-display);
+    font-weight: 600;
+    letter-spacing: var(--sc-track-tight);
+    line-height: var(--sc-leading-tight);
+    text-wrap: balance;
+    color: var(--sc-ink);
+  }
+  .ak-h--title { font-size: var(--sc-t-4xl); line-height: var(--sc-leading-none); }
+  .ak-h--ch    { font-size: var(--sc-t-2xl); }
+  .ak-p {
+    font-family: var(--sc-font-text);
+    font-size: var(--sc-t-base);
+    line-height: var(--sc-leading-body);
+    letter-spacing: var(--sc-track-normal);
+    max-width: var(--sc-measure);
+    text-wrap: pretty;
+    color: var(--sc-ink-soft);
+  }
+  .ak-p strong { color: var(--sc-ink); font-weight: 500; }
+  .ak-rule { height: 1px; background: var(--ak-rule); border: 0; margin: 0; }
+
+  /* More space above a heading than below it: the gap belongs to the
+     boundary, not to the heading-and-body pair. */
+  .ak-chapter-head { margin-top: var(--sc-section); margin-bottom: var(--sc-6); }
+  .ak-chapter-head .ak-h { margin-top: var(--sc-4); }
+
+  /* --------------------------------------------------- placeholder art -- */
+  /* No asset reached this build. These frames hold the exact aspect ratio
+     the real file needs, and carry its spec, so dropping the photograph in
+     changes nothing about the layout. */
+  .ak-ph {
+    position: relative; display: block; width: 100%;
+    background:
+      repeating-linear-gradient(
+        -45deg,
+        color-mix(in oklab, var(--sc-ink) 4%, transparent) 0 2px,
+        transparent 2px 11px);
+    border: 1px solid var(--ak-rule);
+    border-radius: var(--sc-r-md);
+    overflow: hidden;
+  }
+  .ak-ph--32 { aspect-ratio: 3 / 2; }
+  .ak-ph--45 { aspect-ratio: 4 / 5; }
+  .ak-ph--11 { aspect-ratio: 1 / 1; }
+  .ak-ph__spec {
+    position: absolute; inset: auto var(--sc-4) var(--sc-4) var(--sc-4);
+    font-family: var(--sc-font-text);
+    font-size: var(--sc-t-xs);
+    line-height: 1.5;
+    letter-spacing: var(--sc-track-wide);
+    text-transform: uppercase;
+    color: var(--sc-ink-soft);
+  }
+  .ak-ph__spec b {
+    display: block; color: var(--sc-accent); font-weight: 600;
+    letter-spacing: var(--sc-track-wide);
+  }
+  figcaption {
+    margin-top: var(--sc-3);
+    font-family: var(--sc-font-text);
+    font-size: var(--sc-t-sm);
+    line-height: 1.55;
+    color: var(--sc-ink-soft);
+    max-width: 42ch;
+  }
+  figcaption b { color: var(--sc-ink); font-weight: 500; }
+
+  /* ======================================================== 0 title page */
+  /* The grammar's hero: type on the paper ground, no media above the fold.
+     Copy is lead-anchored, never centred. */
+  .title {
+    min-height: 100svh;
+    display: flex; flex-direction: column; justify-content: space-between;
+    padding-block: var(--sc-7) var(--sc-6);
+  }
+  .title__mark {
+    font-family: var(--sc-font-display);
+    font-weight: 700; font-size: var(--sc-t-lg);
+    letter-spacing: var(--sc-track-snug);
+    color: var(--sc-ink);
+  }
+  .title__body { max-width: 22ch; }
+  .title__sub {
+    margin-top: var(--sc-5);
+    font-family: var(--sc-font-text);
+    font-size: var(--sc-t-lg);
+    line-height: 1.45;
+    color: var(--sc-ink-soft);
+    max-width: 34ch;
+    text-wrap: pretty;
+  }
+  .title__foot {
+    display: flex; flex-wrap: wrap; gap: var(--sc-2) var(--sc-6);
+    align-items: baseline;
+  }
+  @media (max-width: 700px) {
+    .ak-h--title { font-size: var(--sc-t-2xl); }
+  }
+
+  /* ========================================================= 1 the room */
+  .room__grid {
+    display: grid; gap: var(--sc-7);
+    grid-template-columns: 1fr;
+    padding-bottom: var(--sc-section);
+  }
+  @media (min-width: 900px) {
+    .room__grid { grid-template-columns: 1.15fr 0.85fr; align-items: end; }
+  }
+  /* Media sits in its own column with a caption. It never bleeds under type. */
+  .room__fig { margin: 0; }
+
+  /* ========================================================= 2 the work */
+  .work__spread {
+    display: grid; gap: var(--sc-7) var(--sc-8);
+    grid-template-columns: 1fr;
+    padding-bottom: var(--sc-section);
+  }
+  @media (min-width: 900px) {
+    .work__spread { grid-template-columns: 0.9fr 1.1fr; align-items: start; }
+    .work__aside { position: sticky; top: var(--sc-8); }
+  }
+  .work__list { list-style: none; margin: 0; padding: 0; }
+  .work__list li {
+    display: grid; grid-template-columns: 3.2rem 1fr; gap: var(--sc-4);
+    padding-block: var(--sc-5);
+    border-top: 1px solid var(--ak-rule);
+  }
+  .work__list li:last-child { border-bottom: 1px solid var(--ak-rule); }
+  .work__list dt, .work__k {
+    font-family: var(--sc-font-text);
+    font-size: var(--sc-t-xs);
+    letter-spacing: var(--sc-track-wide);
+    text-transform: uppercase;
+    color: var(--sc-accent);
+    font-variant-numeric: tabular-nums;
+    padding-top: 0.35em;
+  }
+  .work__v { font-family: var(--sc-font-text); font-size: var(--sc-t-base); line-height: 1.6; color: var(--sc-ink); }
+  .work__v span { display: block; margin-top: var(--sc-2); color: var(--sc-ink-soft); font-size: var(--sc-t-sm); }
+
+  .ak-note {
+    margin-top: var(--sc-6);
+    padding: var(--sc-5);
+    border: 1px dashed var(--sc-accent);
+    border-radius: var(--sc-r-md);
+    font-family: var(--sc-font-text);
+    font-size: var(--sc-t-sm);
+    line-height: 1.6;
+    color: var(--sc-ink);
+    max-width: 56ch;
+  }
+  .ak-note b { display: block; color: var(--sc-accent); letter-spacing: var(--sc-track-wide); text-transform: uppercase; font-size: var(--sc-t-xs); margin-bottom: var(--sc-2); }
+
+  /* ========================================================= 3 the path */
+  /* THE SIGNATURE MOVE. The page holds still and the reader climbs. Rungs
+     behind the marker compress and dim; rungs ahead stay evenly spaced.
+     Everything except the line swap is calc() against --sc-p. */
+  .path__stage {
+    min-height: 100svh;
+    display: grid; align-content: center; gap: var(--sc-7);
+    padding-block: var(--sc-8);
+  }
+  .path__inner {
+    display: grid; gap: var(--sc-7);
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 900px) {
+    .path__inner { grid-template-columns: 15rem 1fr; gap: var(--sc-9); align-items: center; }
+  }
+
+  .track { position: relative; padding-left: var(--sc-6); }
+  .track__spine {
+    position: absolute; left: 0; top: 0; bottom: 0; width: 1px;
+    background: var(--ak-rule);
+  }
+  /* The reader's own position. The only travelling element on the page,
+     and one of two things the accent is allowed to own. */
+  .track__me {
+    position: absolute; left: -4px; top: 0;
+    width: 9px; height: 9px; border-radius: 50%;
+    background: var(--sc-accent);
+    box-shadow: 0 0 0 4px color-mix(in oklab, var(--sc-accent) 22%, transparent);
+    transform: translateY(calc(var(--sc-p, 0) * var(--track-h, 0px)));
+    will-change: transform;
+  }
+  .rung {
+    --d: calc(var(--sc-p, 0) * 5 - var(--i));
+    --k: clamp(0, var(--d), 1);            /* 0 ahead of you, 1 behind you */
+    position: relative;
+    padding-block: var(--sc-3);
+    transform-origin: left center;
+    transform:
+      translateY(calc(var(--k) * -0.55rem))
+      scale(calc(1 - var(--k) * 0.14));
+    opacity: calc(1 - var(--k) * 0.6);
+    font-family: var(--sc-font-text);
+    font-size: var(--sc-t-sm);
+    letter-spacing: var(--sc-track-wide);
+    text-transform: uppercase;
+    color: var(--sc-ink);
+  }
+  .rung__n {
+    color: var(--sc-ink-soft); font-variant-numeric: tabular-nums;
+    margin-right: var(--sc-3);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .rung { transform: none; opacity: calc(1 - var(--k) * 0.35); }
+    .track__me { transition: none; }
+  }
+
+  /* The line rewrites in place. A hard swap, not a crossfade: this grammar
+     cuts. The accent rule under it wipes with clip-path, which is the
+     sanctioned third property for a wipe. */
+  .say { max-width: 32ch; }
+  .say__lead {
+    font-family: var(--sc-font-text);
+    font-size: var(--sc-t-sm);
+    letter-spacing: var(--sc-track-wide);
+    text-transform: uppercase;
+    color: var(--sc-ink-soft);
+  }
+  .say__line {
+    display: block;
+    margin-top: var(--sc-4);
+    font-family: var(--sc-font-display);
+    font-weight: 600;
+    font-size: var(--sc-t-xl);
+    line-height: var(--sc-leading-tight);
+    letter-spacing: var(--sc-track-snug);
+    color: var(--sc-ink);
+    text-wrap: balance;
+    max-width: 28ch;
+    min-height: 3.4em;          /* reserve the tallest line's room so the
+                                   swap does not shift the rule under it */
+  }
+  .say__wipe {
+    margin-top: var(--sc-5);
+    height: 2px; width: min(18rem, 60%);
+    background: var(--sc-accent);
+    clip-path: inset(0 0 0 0);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .say--swap .say__wipe { animation: ak-wipe 420ms var(--sc-ease-out); }
+  }
+  @keyframes ak-wipe {
+    from { clip-path: inset(0 100% 0 0); }
+    to   { clip-path: inset(0 0 0 0); }
+  }
+
+  /* ======================================================= 4 the people */
+  .people__rail {
+    min-height: 100svh;
+    display: flex; align-items: center; gap: var(--sc-6);
+    padding-inline: max(var(--sc-gutter), var(--ak-folio-w)) var(--sc-gutter);
+  }
+  .rail__item { flex: 0 0 clamp(17rem, 27vw, 23rem); display: flex; }
+  .rail__item--head { flex-basis: clamp(14rem, 22vw, 19rem); }
+  .rail__item--note { flex-basis: clamp(15rem, 24vw, 21rem); }
+
+  /* Not identical cards as the page structure: this is a rail of one kind
+     of object, in one chapter, and each item is a person rather than a
+     feature. Hairline and space, no filled tile. */
+  .voice {
+    display: flex; flex-direction: column; gap: var(--sc-4);
+    padding-top: var(--sc-4);
+    border-top: 1px solid var(--ak-rule);
+  }
+  .voice__q {
+    font-family: var(--sc-font-text);
+    font-size: var(--sc-t-base);
+    line-height: 1.6;
+    color: var(--sc-ink);
+    margin: 0;
+  }
+  .voice__who { margin-top: auto; }
+  .voice__name { display: block; font-family: var(--sc-font-text); font-size: var(--sc-t-sm); color: var(--sc-ink); }
+  .voice__role { display: block; font-family: var(--sc-font-text); font-size: var(--sc-t-xs); letter-spacing: var(--sc-track-wide); text-transform: uppercase; color: var(--sc-ink-soft); margin-top: var(--sc-1); }
+  .voice .ak-ph { margin-bottom: var(--sc-1); }
+
+  /* Staggered settle from --sc-p, so the rail reads as a drawer being
+     pulled rather than a slideshow. First item exempt: a pan act needs its
+     opening content already present. */
+  @media (prefers-reduced-motion: no-preference) {
+    .rail__item[data-s] {
+      --sd: calc(var(--sc-p, 0) * 4.2 - var(--s));
+      --sk: clamp(0, var(--sd), 1);
+      opacity: calc(0.55 + var(--sk) * 0.45);
+      transform: translateY(calc((1 - var(--sk)) * 0.9rem));
+    }
+  }
+
+  /* ==================================================== 5 who runs it */
+  .who__grid {
+    display: grid; gap: var(--sc-7);
+    grid-template-columns: 1fr;
+    padding-bottom: var(--sc-section);
+  }
+  @media (min-width: 900px) {
+    .who__grid { grid-template-columns: 0.8fr 1.2fr; gap: var(--sc-9); align-items: center; }
+  }
+  .who__figwrap { overflow: hidden; border-radius: var(--sc-r-md); }
+
+  /* ====================================================== 6 colophon */
+  /* The close is a plate, not a button island. The invitation is a line of
+     running text, and it holds. */
+  .colophon { padding-block: var(--sc-section); min-height: 78svh; display: flex; align-items: center; }
+  .colophon__grid { display: grid; gap: var(--sc-6); }
+  .colophon__say {
+    font-family: var(--sc-font-display);
+    font-weight: 600;
+    font-size: var(--sc-t-xl);
+    line-height: 1.32;
+    letter-spacing: var(--sc-track-snug);
+    color: var(--sc-ink);
+    max-width: 30ch;
+    text-wrap: pretty;
+  }
+  .colophon__say a {
+    color: var(--sc-accent);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.22em;
+    border-radius: 2px;
+  }
+  .colophon__say a:hover { text-decoration-thickness: 2px; }
+  .colophon__say a:focus-visible {
+    outline: 2px solid var(--sc-accent); outline-offset: 3px; text-decoration: none;
+  }
+  .colophon__meta {
+    display: grid; gap: var(--sc-4) var(--sc-7);
+    grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+    max-width: 52rem;
+    padding-top: var(--sc-5);
+    border-top: 1px solid var(--ak-rule);
+  }
+  .colophon__meta div { font-family: var(--sc-font-text); font-size: var(--sc-t-sm); color: var(--sc-ink-soft); line-height: 1.6; }
+  .colophon__meta b { display: block; font-size: var(--sc-t-xs); letter-spacing: var(--sc-track-wide); text-transform: uppercase; color: var(--sc-ink); font-weight: 500; margin-bottom: var(--sc-1); }
+  .colophon__meta a { color: inherit; text-decoration: underline; text-underline-offset: 0.18em; }
+  .colophon__meta a:focus-visible { outline: 2px solid var(--sc-accent); outline-offset: 2px; }
+</style>
+</head>
+<body>
+
+<div class="sc-grain" aria-hidden="true"></div>
+
+<aside class="folio" aria-hidden="true">
+  <span class="folio__n" data-folio-n>00</span>
+  <span class="folio__bar"></span>
+  <span class="folio__t" data-folio-t>Title</span>
+</aside>
+
+<main>
+
+  <!-- =============================================== 0 · TITLE PAGE ===== -->
+  <!-- Grammar: a title page, not a hero. Type on the ground, no media above
+       the fold, copy anchored lead. Four text elements, no more. -->
+  <section class="ch ch--title" data-ch="00" data-ch-title="Title">
+    <div class="ak-wrap title">
+      <p class="title__mark">Akalade</p>
+
+      <div class="title__body" data-sc-in data-sc-stagger="70">
+        <h1 class="ak-h ak-h--title" data-sc-kinetic="lines">
+          Your success counts.
+        </h1>
+        <p class="title__sub">
+          A sales and marketing company in Garden City, New York. This page is
+          about working here.
+        </p>
+      </div>
+
+      <div class="title__foot ak-label">
+        <span>Garden City, NY</span>
+        <span>Established 2023</span>
+        <span>Six chapters</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================== 1 · THE ROOM ==== -->
+  <section class="ch ch--room" data-ch="01" data-ch-title="The room">
+    <div class="ak-wrap">
+      <header class="ak-chapter-head" data-sc-in data-sc-stagger="60">
+        <hr class="ak-rule">
+        <p class="ak-label" style="margin-top:var(--sc-4)">Chapter one</p>
+        <h2 class="ak-h ak-h--ch">A room where people talk to strangers for a living.</h2>
+      </header>
+
+      <div class="room__grid">
+        <figure class="room__fig" data-sc-reveal="up" data-sc-reveal-at="0.05 0.5">
+          <div class="ak-ph ak-ph--32" role="img"
+               aria-label="Placeholder for a photograph of the Garden City floor during a shift">
+            <span class="ak-ph__spec">
+              <b>Placeholder</b>
+              assets/room.jpg · 3:2 · the floor mid shift, available light, nobody posing
+            </span>
+          </div>
+          <figcaption>
+            <b>The floor, Quentin Roosevelt Boulevard.</b>
+            Most of the day happens standing up, inside a retail space, in front
+            of somebody who did not plan on talking to you.
+          </figcaption>
+        </figure>
+
+        <div data-sc-in data-sc-stagger="70">
+          <p class="ak-p">
+            Akalade runs face to face sales and customer acquisition for telecom
+            brands, inside large format retail. That is the whole of it. There
+            is no phone bank, no script read from a screen, and no version of
+            this job that happens sitting down.
+          </p>
+          <p class="ak-p" style="margin-top:var(--sc-5)">
+            <strong>The reason people stay is the room.</strong> The reason
+            people leave is usually the same room on a bad week. Both are true,
+            and the next chapter is the one that says which is which.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================ 2 · THE WORK, PLAINLY = -->
+  <!-- Hard cut to paper. The chapter that earns everything after it. -->
+  <section class="ch ch--work" data-ch="02" data-ch-title="The work">
+    <div class="ak-wrap">
+      <header class="ak-chapter-head" data-sc-in data-sc-stagger="60">
+        <hr class="ak-rule">
+        <p class="ak-label" style="margin-top:var(--sc-4)">Chapter two</p>
+        <h2 class="ak-h ak-h--ch">The job, before the good part.</h2>
+      </header>
+
+      <div class="work__spread">
+        <aside class="work__aside" data-sc-in>
+          <figure style="margin:0">
+            <div class="ak-ph ak-ph--45" role="img"
+                 aria-label="Placeholder for a close photograph of hands and a device">
+              <span class="ak-ph__spec">
+                <b>Placeholder</b>
+                assets/work-01.jpg · 4:5 · hands and a device, close, working light
+              </span>
+            </div>
+            <figcaption>Day one looks like this, and so does day two hundred.</figcaption>
+          </figure>
+        </aside>
+
+        <div data-sc-in data-sc-stagger="70">
+          <p class="ak-p">
+            Every candidate who reads a careers page already knows it is going to
+            be flattering. So here is the shape of the work first, and the case
+            for it afterwards.
+          </p>
+
+          <ul class="work__list" style="margin-top:var(--sc-6)">
+            <li>
+              <span class="work__k">01</span>
+              <span class="work__v">You are on your feet, in a store, for a full shift.
+                <span>Standing, moving, approaching people who did not come in to see you.</span></span>
+            </li>
+            <li>
+              <span class="work__k">02</span>
+              <span class="work__v">Most conversations end in no.
+                <span>The skill being built is what you do with the next one, thirty seconds later.</span></span>
+            </li>
+            <li>
+              <span class="work__k">03</span>
+              <span class="work__v">Progression is measured, not granted.
+                <span>Chapter three is the whole ladder, and the numbers behind each rung are set by the client, not by mood.</span></span>
+            </li>
+            <li>
+              <span class="work__k">04</span>
+              <span class="work__v">The first months are coached, closely.
+                <span>That is the part current and former employees are most consistent about in public reviews.</span></span>
+            </li>
+          </ul>
+
+          <div class="ak-note">
+            <b>This block needs Akalade's own words</b>
+            Pay structure goes here, in plain numbers: base, commission, and a
+            realistic first year range. Say it here, in the second chapter,
+            before the page has asked the reader for anything. A candidate who
+            finds the number here trusts the rest of the page. A candidate who
+            finds it somewhere else does not.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================== 3 · THE PATH ==== -->
+  <!-- PEAK. The only pinned chapter, the largest span, and the one bespoke
+       interaction on the page. The stage is grounded at p=0 by the track
+       itself, so nothing waits on a cue to appear. -->
+  <section class="ch ch--path" data-ch="03" data-ch-title="The path"
+           data-sc-act="pin" data-sc-span="4.4">
+    <div data-sc-stage>
+      <div class="ak-wrap path__stage">
+        <header>
+          <hr class="ak-rule">
+          <p class="ak-label" style="margin-top:var(--sc-4)">Chapter three</p>
+          <h2 class="ak-h ak-h--ch" style="max-width:24ch">The ladder, from where you would actually start.</h2>
+        </header>
+
+        <div class="path__inner">
+          <div class="track" data-track>
+            <span class="track__spine" aria-hidden="true"></span>
+            <span class="track__me" data-me aria-hidden="true"></span>
+            <ol style="list-style:none;margin:0;padding:0" data-rungs>
+              <li class="rung" style="--i:0"><span class="rung__n">01</span>Account representative</li>
+              <li class="rung" style="--i:1"><span class="rung__n">02</span>Senior representative</li>
+              <li class="rung" style="--i:2"><span class="rung__n">03</span>Team lead</li>
+              <li class="rung" style="--i:3"><span class="rung__n">04</span>Assistant manager</li>
+              <li class="rung" style="--i:4"><span class="rung__n">05</span>Manager</li>
+            </ol>
+          </div>
+
+          <div class="say" data-say>
+            <p class="say__lead">Where you are</p>
+            <strong class="say__line" data-say-line>Today I am learning the pitch.</strong>
+            <div class="say__wipe" aria-hidden="true"></div>
+          </div>
+        </div>
+
+        <p class="ak-p" data-sc-cue="0.5 1 0.15 0.05" style="max-width:44ch">
+          The rungs are real titles at Akalade. The pace between them is not
+          promised here, because it is set by performance and by what the client
+          needs. Ask about it in the interview, and ask for a name of somebody
+          who did it.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================ 4 · THE PEOPLE ==== -->
+  <section class="ch ch--people" data-ch="04" data-ch-title="The people"
+           data-sc-act="pan" data-sc-span="3.2">
+    <div data-sc-stage>
+      <div class="people__rail" data-rail data-sc-pan="0.06">
+
+        <div class="rail__item rail__item--head">
+          <header>
+            <hr class="ak-rule">
+            <p class="ak-label" style="margin-top:var(--sc-4)">Chapter four</p>
+            <h2 class="ak-h ak-h--ch" style="font-size:var(--sc-t-xl);max-width:14ch">
+              The people already here.
+            </h2>
+          </header>
+        </div>
+
+        <div class="rail__item" data-s="1">
+          <figure class="voice">
+            <div class="ak-ph ak-ph--11" role="img" aria-label="Placeholder for an employee portrait">
+              <span class="ak-ph__spec"><b>Placeholder</b>assets/team-01.jpg · 1:1</span>
+            </div>
+            <blockquote class="voice__q">Real quote goes here. Twenty to forty five words, first person, in the words they actually used.</blockquote>
+            <figcaption class="voice__who">
+              <span class="voice__name">Name, on the record</span>
+              <span class="voice__role">Role · months at Akalade</span>
+            </figcaption>
+          </figure>
+        </div>
+
+        <div class="rail__item" data-s="2">
+          <figure class="voice">
+            <div class="ak-ph ak-ph--11" role="img" aria-label="Placeholder for an employee portrait">
+              <span class="ak-ph__spec"><b>Placeholder</b>assets/team-02.jpg · 1:1</span>
+            </div>
+            <blockquote class="voice__q">Ask this one about the first month specifically. The hardest part, and what changed it.</blockquote>
+            <figcaption class="voice__who">
+              <span class="voice__name">Name, on the record</span>
+              <span class="voice__role">Role · months at Akalade</span>
+            </figcaption>
+          </figure>
+        </div>
+
+        <div class="rail__item" data-s="3">
+          <figure class="voice">
+            <div class="ak-ph ak-ph--11" role="img" aria-label="Placeholder for an employee portrait">
+              <span class="ak-ph__spec"><b>Placeholder</b>assets/team-03.jpg · 1:1</span>
+            </div>
+            <blockquote class="voice__q">Ask this one what they would tell somebody deciding tonight whether to take the interview.</blockquote>
+            <figcaption class="voice__who">
+              <span class="voice__name">Name, on the record</span>
+              <span class="voice__role">Role · months at Akalade</span>
+            </figcaption>
+          </figure>
+        </div>
+
+        <div class="rail__item" data-s="4">
+          <figure class="voice">
+            <div class="ak-ph ak-ph--11" role="img" aria-label="Placeholder for an employee portrait">
+              <span class="ak-ph__spec"><b>Placeholder</b>assets/team-04.jpg · 1:1</span>
+            </div>
+            <blockquote class="voice__q">Ask this one about the day they nearly quit, and what the week after that looked like.</blockquote>
+            <figcaption class="voice__who">
+              <span class="voice__name">Name, on the record</span>
+              <span class="voice__role">Role · months at Akalade</span>
+            </figcaption>
+          </figure>
+        </div>
+
+        <div class="rail__item rail__item--note" data-s="5">
+          <div class="ak-note" style="margin-top:var(--sc-6)">
+            <b>Three real people, not three reviews</b>
+            A named colleague with a face and a length of service outweighs any
+            number of anonymous star ratings, and it is the version of this
+            chapter that survives a candidate checking it.
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================== 5 · WHO RUNS IT ===== -->
+  <section class="ch ch--who" data-ch="05" data-ch-title="Who runs it">
+    <div class="ak-wrap">
+      <header class="ak-chapter-head" data-sc-in data-sc-stagger="60">
+        <hr class="ak-rule">
+        <p class="ak-label" style="margin-top:var(--sc-4)">Chapter five</p>
+        <h2 class="ak-h ak-h--ch">Who you would be working for.</h2>
+      </header>
+
+      <div class="who__grid">
+        <div class="who__figwrap" data-sc-reveal="left" data-sc-reveal-at="0.08 0.55">
+          <figure style="margin:0" data-sc-parallax="0.5">
+            <div class="ak-ph ak-ph--45" role="img"
+                 aria-label="Placeholder for a portrait of the chief executive">
+              <span class="ak-ph__spec">
+                <b>Placeholder</b>
+                assets/ceo.jpg · 4:5 · environmental, not studio
+              </span>
+            </div>
+          </figure>
+        </div>
+
+        <div data-sc-in data-sc-stagger="70">
+          <p class="ak-label">Kevin Tomczyk · Chief executive</p>
+          <p class="ak-p" style="margin-top:var(--sc-4)">
+            Bio goes here, in his own voice, and it should answer one question
+            rather than list a career: what he wants somebody to be able to do
+            after a year here that they could not do before.
+          </p>
+          <p class="ak-p" style="margin-top:var(--sc-5)">
+            <strong>Management sits in the same room.</strong> Names, titles and
+            one line each go here, with the same photographic treatment. Keep it
+            to the people a new hire would actually work under in their first
+            six months.
+          </p>
+
+          <div class="ak-note">
+            <b>Needs the client's copy</b>
+            The founder and management text on the current site can be reused
+            here verbatim. It could not be fetched into this build: the network
+            policy on this environment blocks akaladeconsulting.com.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================= 6 · COLOPHON ===== -->
+  <!-- The close resolves and holds. Running text, not a button island. -->
+  <section class="ch ch--colophon" data-ch="06" data-ch-title="Colophon">
+    <div class="ak-wrap colophon">
+      <div class="colophon__grid" data-sc-in data-sc-stagger="80">
+        <hr class="ak-rule">
+        <p class="ak-label">Colophon</p>
+
+        <p class="colophon__say">
+          If the second chapter did not put you off, that is the useful signal.
+          Write to <a href="mailto:hr@akalade.com">hr@akalade.com</a> and say
+          which chapter you want to ask about.
+        </p>
+
+        <div class="colophon__meta">
+          <div><b>Where</b>100 Quentin Roosevelt Blvd, Suite 108<br>Garden City, NY 11530</div>
+          <div><b>Hiring</b><a href="mailto:hr@akalade.com">hr@akalade.com</a></div>
+          <div><b>Company</b>Akalade Inc.<br>New York, established 2023</div>
+          <div><b>This page</b>Draft. Copy and photography pending client review.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script src="scrollcraft.js"></script>
+<script>ScrollCraft.mount(document.body);</script>
+<script>
+/* ==========================================================================
+   Page-local behaviour. The engine is untouched.
+
+   1. The folio: which chapter, and how far through the document.
+   2. The Rung Line: the line that rewrites itself in place, plus the
+      measurement the marker's travel needs.
+   ========================================================================== */
+(function () {
+  "use strict";
+
+  /* ------------------------------------------------------------- folio -- */
+  var folioN = document.querySelector("[data-folio-n]");
+  var folioT = document.querySelector("[data-folio-t]");
+  var chapters = [].slice.call(document.querySelectorAll("[data-ch]"));
+
+  if (folioN && chapters.length && "IntersectionObserver" in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        folioN.textContent = e.target.getAttribute("data-ch");
+        folioT.textContent = e.target.getAttribute("data-ch-title");
+      });
+    }, { rootMargin: "-45% 0px -45% 0px", threshold: 0 });
+    chapters.forEach(function (c) { io.observe(c); });
+  }
+
+  /* ------------------------------------------------- the Rung Line ------ */
+  var path  = document.querySelector('[data-sc-act="pin"]');
+  var track = document.querySelector("[data-track]");
+  var rungs = document.querySelector("[data-rungs]");
+  var say   = document.querySelector("[data-say]");
+  var line  = document.querySelector("[data-say-line]");
+
+  /* One line, one position. The pronoun never changes; the responsibility
+     does. This is the move: not a stack of cards, a sentence being rewritten
+     under the reader. */
+  var LINES = [
+    "Today I am learning the pitch.",
+    "Today I am the one they send to the hard store.",
+    "Today I am running the morning meeting.",
+    "Today I am accountable for someone else's numbers.",
+    "Today I am training the person who will replace me."
+  ];
+
+  if (!path || !track || !rungs || !line) return;
+
+  /* The marker travels the distance between the first rung's centre and the
+     last rung's centre, measured rather than assumed, because the rungs
+     compress as the reader passes them and a hardcoded height drifts. */
+  function measure() {
+    var items = rungs.children;
+    if (items.length < 2) return;
+    var first = items[0].offsetTop + items[0].offsetHeight / 2;
+    var last  = items[items.length - 1].offsetTop + items[items.length - 1].offsetHeight / 2;
+    track.style.setProperty("--track-h", (last - first) + "px");
+    track.style.setProperty("--me-top", first + "px");
+    var me = track.querySelector("[data-me]");
+    if (me) me.style.top = first + "px";
+  }
+
+  var idx = -1;
+  function tick() {
+    var raw = getComputedStyle(path).getPropertyValue("--sc-p");
+    var p = parseFloat(raw);
+    if (isNaN(p)) p = 0;
+
+    var next = Math.min(LINES.length - 1, Math.max(0, Math.floor(p * LINES.length)));
+    if (next !== idx) {
+      idx = next;
+      line.textContent = LINES[idx];
+      /* Retrigger the wipe. A hard swap with a rule drawn under it, not a
+         crossfade: this grammar cuts between states. */
+      say.classList.remove("say--swap");
+      void say.offsetWidth;
+      say.classList.add("say--swap");
+    }
+    raf = requestAnimationFrame(tick);
+  }
+
+  /* Only run the loop while the chapter is anywhere near the viewport.
+     getComputedStyle every frame for a section nobody is looking at is a
+     layout read for nothing. */
+  var raf = 0;
+  var live = false;
+  var vis = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting && !live) { live = true; measure(); raf = requestAnimationFrame(tick); }
+      else if (!e.isIntersecting && live) { live = false; cancelAnimationFrame(raf); }
+    });
+  }, { rootMargin: "120% 0px 120% 0px" });
+  vis.observe(path);
+
+  measure();
+  addEventListener("resize", measure, { passive: true });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(measure);
+
+  /* Document progress for the folio bar. */
+  var docEl = document.documentElement;
+  addEventListener("scroll", function () {
+    var h = docEl.scrollHeight - innerHeight;
+    docEl.style.setProperty("--ak-doc", h > 0 ? (docEl.scrollTop / h).toFixed(4) : "0");
+  }, { passive: true });
+})();
+</script>
+</body>
+</html>
