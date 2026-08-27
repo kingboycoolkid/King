@@ -31,7 +31,7 @@ changes only grammar and world will fail it.
 
 | Build | Grammar | Nav | Hero | Act shape | Close | Signature move |
 |---|---|---|---|---|---|---|
-| **akalade** | Chaptered editorial, loosened: chapters cut between densities of one continuous night ground | Margin folio, chapter number and title, no fixed bar | Title page, type only, no media above the fold | 7 chapters, one pinned, one pan, rest flow; peak at 4 of 7; 13.0vh desktop | Colophon plate, CTA as running text | The Rung Line |
+| **akalade** | Chaptered editorial, loosened: chapters cut between densities of one continuous night ground | Margin folio plus a slim top tab bar revealed after the title page | Title page, type only, no media above the fold | 7 chapters, one pinned, one pan, rest flow; peak at 4 of 7; 13.0vh desktop | Colophon plate, CTA as running text | The Rung Line |
 
 ---
 
@@ -51,8 +51,11 @@ as a constraint, so writing them down is the whole point.
   while one line rewrites itself in place. Any later "the reader moves, not the
   content" device has to differ in more than its subject.
 - **The 7-chapter, 12.7vh band** is taken.
-- **A generative canvas skyline as a fixed page ground**, seeded for
-  determinism, with windows cycling out of phase, is taken.
+- **A hand-written perspective projector drawing a lofted city as the fixed
+  page ground, flown by scroll position**, with quality tiers that fall under
+  load, is taken.
+- **A two-view single document** (chaptered page plus a contact view on its own
+  hash) is taken.
 
 ---
 

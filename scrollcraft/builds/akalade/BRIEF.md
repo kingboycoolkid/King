@@ -503,3 +503,115 @@ brightest pixel actually behind each line on the composited page:
 
 kie.ai balance: **52 credits**, after 28 spent reaching a generation that could
 not be downloaded.
+
+
+---
+
+# Fourth pass: a lofted New York, tabs, and the ask
+
+Client direction: a 3D lofted New York flown from above, tabs at the top going
+to a contact page, an application button in chapter three, and more 3D.
+
+## The city is real geometry now
+
+`city3d.js`. A perspective projector written for this page rather than a 3D
+library imported into it: a general library is several hundred kilobytes of
+scene graph, materials and loaders to draw what this needs, which is extruded
+rectangles, flat shading and fog. Two hundred lines, tuned exactly.
+
+- **Manhattan by three cues, not by detail.** A long grid, one dark rectangle
+  where the park is, water on both sides. Two height clusters, downtown and
+  midtown, with a low stretch between them. A handful of outliers per district
+  break the roofline, because without them a skyline is a hedge.
+- **Scroll is the flight.** Camera altitude and position come from document
+  progress: you descend from 430 to 320 as you read, and travel 5,200 units up
+  the island. The flight lags the wheel, so it glides rather than snaps.
+- **Pointer parallax.** The camera leans toward where you are looking, gated to
+  real pointers so a tap does not lurch it.
+- **Depth by contrast.** Near buildings are shaded *down*, far ones fogged
+  toward the horizon glow, because atmosphere lights the distance and leaves
+  the foreground dark. Getting this backwards was the first attempt's mistake.
+- **Windows in perspective**, interpolated across each wall's own parameter
+  space rather than pasted flat, in three alpha buckets with one canvas path
+  each. Thousands of individual `fillRect` calls is the difference between
+  thirty frames and ten.
+
+### Quality tiers, because a phone is not a laptop
+
+The first honest measurement on a 390px viewport was **5fps**. The city is a
+background: it takes what is left after the page is smooth, never the reverse.
+
+| Tier | What it draws |
+|---|---|
+| 2 | Every building, two visible walls, windows from 34px of wall |
+| 1 | Windows only on the nearest towers, 62% draw distance, one wall |
+| 0 | A third of the buildings, 28% draw distance, no windows |
+
+Phones start at tier 1 and hold **61fps** with their lights on. Desktop runs
+tier 2 at **31fps**, which is fill rate rather than overhead: caching the
+quantised face colours changed nothing, so the cost is rasterising the quads.
+At the camera's speed that reads smooth.
+
+The tier also falls on its own if frames run long, **after a ninety frame
+warm-up**. Without that warm-up the first slow frames after mount, when fonts
+are landing and the engine is laying out, permanently downgraded a capable
+machine and the windows never came back. That bug shipped into one screenshot
+before it was caught.
+
+## Tabs, a contact view, and the ask
+
+- **Tabs**: Page, Contact, and Apply. The chaptered grammar wants a margin folio
+  and no fixed bar; the client asked for tabs, so there are tabs, kept slim and
+  **held back until the title page has been left**, so the first screen is still
+  a title page rather than a website with a menu on it.
+- **Contact** is a real view with its own hash and history entry, so Back works
+  and the link is shareable, at no page load. The folio hides there: there is no
+  chapter to be in. It links to the live application form rather than
+  reproducing it, because a form with no backend that appears to accept a
+  submission is worse than no form.
+- **Apply to Akalade** sits directly under the first-person line in chapter
+  three. It was first placed below the closing paragraph, inside its cue, where
+  it reached 0.62 opacity at the bottom edge of the screen and never fully
+  arrived. Moved beside the ladder and uncued, it is at eye level and present
+  for the whole chapter: the reader has just watched themselves climb, and that
+  is the moment to ask.
+- **The culture photographs tilt toward the pointer** (`data-sc-tilt`), which is
+  the engine's own device rather than another bespoke one.
+
+## Three bugs this pass, all invisible until measured
+
+1. **Horizontal overflow on a phone**, 651px of document in a 390px viewport.
+   Three compounding causes: the pan rail's items were unclipped, an unbreakable
+   30-character email address was set in display type, and
+   `repeat(auto-fit, minmax(11rem, 1fr))` cannot shrink below its floor, so
+   during intrinsic sizing it resolved more tracks than fit. The last one is the
+   subtle one and the fix is `minmax(min(11rem, 100%), 1fr)`.
+   **The shoot harness does not check horizontal overflow**, so none of this
+   showed up in a green run.
+2. **The bundler duplicated half the page.** The night layer was matched with a
+   lazy `</div>\s*</div>`, and the first such pair occurs deep inside `<main>`,
+   so the match swallowed the grain, the tabs, the folio and part of the page,
+   which were then emitted a second time. It does not throw, it duplicates. The
+   bundler now asserts each landmark appears exactly once.
+3. **The quality tier collapsing during warm-up**, above.
+
+## Verified
+
+Desktop 12.7 viewport-heights, mobile 14.4, reduced motion 12.7. No dead
+scroll, no cue that fails to peak, all cues clear 4.5:1. No horizontal overflow
+at 390, 768 or 1440. Text over the lit city, measured against the brightest
+pixel actually behind each line: 6.7, 5.0, 6.4 and 12.8 to one.
+
+The bundle is checked as the artifact host wraps it: the city paints, the tabs
+are three, the apply button is one, and the contact view is reachable.
+
+## Still outstanding
+
+**AI imagery is still unreachable.** kie generates fine but serves results from
+`tempfile.aiquickdraw.com`, which is not in the allowlist, so nothing generated
+can be fetched. Balance is **52 credits**. The `.night__photo` layer is still in
+place and takes a photographic city the moment that host opens, sitting behind
+the geometry rather than replacing it.
+
+Also unchanged: four employee quotes, the pay numbers, and portraits of Kevin
+and the management team.

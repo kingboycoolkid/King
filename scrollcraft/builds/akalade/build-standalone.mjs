@@ -60,9 +60,15 @@ const inlineAssets = (text) =>
 
 const pageCss = html.match(/<style>([\s\S]*?)<\/style>/)[1];
 const pageJs = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map((m) => m[1]);
-const night = pick(/<div class="night"[\s\S]*?<\/div>\s*<\/div>/, "the night layer");
+/* Anchored on </canvas>, not on a pair of closing divs: "</div> followed by
+   </div>" first occurs deep inside <main>, so the lazy version silently
+   swallowed the grain, the tabs, the folio and half the page. */
+const night = pick(/<div class="night"[\s\S]*?<\/canvas>\s*<\/div>/, "the night layer");
 const folio = pick(/<aside class="folio"[\s\S]*?<\/aside>/, "the folio");
-const body = inlineAssets(pick(/<main>[\s\S]*?<\/main>/, "<main>"));
+const tabs = pick(/<nav class="tabs"[\s\S]*?<\/nav>/, "the tab bar");
+const body = inlineAssets(
+  pick(/<main class="view"[\s\S]*?<\/main>/, "<main>") + "\n" +
+  pick(/<section class="view" id="contact"[\s\S]*?<\/section>\s*(?=\n<script)/, "the contact view"));
 
 const out = `<title>Akalade Careers</title>
 
@@ -82,11 +88,15 @@ ${pageCss}
 
 ${night}
 <div class="sc-grain" aria-hidden="true"></div>
+${tabs}
 ${folio}
 ${body}
 
 <script>
 ${read("scrollcraft.js")}
+</script>
+<script>
+${read("city3d.js")}
 </script>
 <script>
 ${pageJs.join("\n")}
@@ -104,8 +114,15 @@ const structural = out
 const leaked = structural.match(/<(?:!doctype|\/?html|\/?head|\/?body)[\s>]/gi);
 if (leaked) problems.push(`wrapper tags emitted: ${[...new Set(leaked)].join(", ")}`);
 
-const external = [...out.matchAll(/(?:src|href)\s*=\s*"(https?:\/\/[^"]+)"/gi)].map((m) => m[1]);
-if (external.length) problems.push(`external references left: ${[...new Set(external)].join(", ")}`);
+/* An outbound <a href> is navigation and is fine: the CSP restricts what the
+   page LOADS, not where it can send you. What must not survive is anything
+   the browser would fetch to render the page. */
+const fetched = [
+  ...out.matchAll(/<(?:script|img|source|video|audio|iframe)\b[^>]*\bsrc\s*=\s*"(https?:\/\/[^"]+)"/gi),
+  ...out.matchAll(/<link\b[^>]*\bhref\s*=\s*"(https?:\/\/[^"]+)"/gi),
+  ...out.matchAll(/url\(\s*['"]?(https?:\/\/[^)'"]+)/gi),
+].map((m) => m[1]);
+if (fetched.length) problems.push(`external resource(s) still fetched at render: ${[...new Set(fetched)].join(", ")}`);
 
 for (const face of ["Archivo", "Geist"]) {
   if (!new RegExp(`font-family:\\s*'${face}'`).test(out)) problems.push(`${face} @font-face missing`);
@@ -120,11 +137,28 @@ if (embeds !== 2) {
 if (/url\(fonts\//.test(out)) problems.push("a @font-face still points at a relative path");
 if (!/ScrollCraft\.mount\(/.test(out)) problems.push("the engine is never mounted");
 if (!/class="night"/.test(out)) problems.push("the night ground is missing");
+if (!/data-city3d/.test(out)) problems.push("the 3D city canvas is missing");
+if (!/function city3d/.test(out)) problems.push("the 3D city script is missing");
+if (!/data-view="contact"/.test(out)) problems.push("the contact view is missing");
+if (!/class="apply"/.test(out)) problems.push("the apply button is missing");
+
+/* Every landmark exactly once. A lazy regex that over-matches does not throw,
+   it duplicates, and a page with two nav bars stacked looks like a styling
+   bug rather than a build bug. */
+[["<nav class=\"tabs\"", "tab bar"],
+ ["<aside class=\"folio\"", "folio"],
+ ["<main class=\"view\"", "page view"],
+ ["id=\"contact\"", "contact view"],
+ ["class=\"sc-grain\"", "grain layer"],
+ ["<div class=\"night\"", "night ground"]].forEach(function (pair) {
+  var n = out.split(pair[0]).length - 1;
+  if (n !== 1) problems.push(`${pair[1]} appears ${n} times, expected once`);
+});
 // Scope this to the page's own markup. Scanning the whole file would also
 // read the engine's inline documentation, whose examples reference asset
 // filenames that were never meant to resolve.
-const markup = [night, folio, body].join("\n");
-const relative = [...markup.matchAll(/(?:src|href)="((?!data:|#|mailto:|tel:)[^"]+)"/g)].map((m) => m[1]);
+const markup = [night, tabs, folio, body].join("\n");
+const relative = [...markup.matchAll(/(?:src|href)="((?!data:|#|mailto:|tel:|https?:)[^"]+)"/g)].map((m) => m[1]);
 if (relative.length) problems.push(`unresolved relative reference(s): ${[...new Set(relative)].join(", ")}`);
 const photos = (out.match(/data:image\/webp;base64,/g) || []).length;
 if (photos < 9) problems.push(`expected at least 9 embedded photographs, found ${photos}`);

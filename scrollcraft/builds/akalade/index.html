@@ -66,13 +66,9 @@
      own work rather than a blur filter pretending to. Windows go out and
      come back one at a time, slowly, because that is the whole idea: it is
      a city that does not sleep, not a city that blinks. */
-  .night__city {
-    position: absolute; inset: auto 0 0 0; height: min(40vh, 26rem);
-    width: 100%; display: block;
-    transform: translateY(calc(var(--ak-doc, 0) * 14%));
-    will-change: transform;
-  }
-  @media (prefers-reduced-motion: reduce) { .night__city { transform: none; } }
+  /* The city fills the frame now: the page is flown over it, so it is the
+     whole ground rather than a strip along the bottom. */
+  .night__city { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 
   .night__photo {
     position: absolute; inset: -6% 0;
@@ -100,14 +96,15 @@
   /* Denser toward the bottom, which is where the copy meets the lit
      windows. Density where the text is, and the sky left alone. */
   .ch--title     { background: linear-gradient(180deg,
-                     rgba(6,13,22,0.30) 0%,
-                     rgba(7,16,26,0.55) 42%,
-                     rgba(8,18,29,0.86) 100%); }
-  .ch--room      { background: color-mix(in oklab, var(--ak-navy) 88%, transparent); }
+                     rgba(6,13,22,0.06) 0%,
+                     rgba(7,16,26,0.30) 34%,
+                     rgba(8,18,29,0.72) 62%,
+                     rgba(6,13,22,0.90) 100%); }
+  .ch--room      { background: color-mix(in oklab, var(--ak-navy) 76%, transparent); }
   .ch--work      { background: #e4eaf0; }
-  .ch--path      { background: color-mix(in oklab, #060d16 78%, transparent); }
-  .ch--people    { background: color-mix(in oklab, var(--ak-navy) 82%, transparent); }
-  .ch--who       { background: color-mix(in oklab, #111f2c 90%, transparent); }
+  .ch--path      { background: color-mix(in oklab, #060d16 58%, transparent); }
+  .ch--people    { background: color-mix(in oklab, var(--ak-navy) 72%, transparent); }
+  .ch--who       { background: color-mix(in oklab, #111f2c 80%, transparent); }
   .ch--colophon  { background: linear-gradient(180deg, rgba(10,20,32,0.80), rgba(6,13,22,0.94)); }
 
   /* The light chapter re-inks its own subtree. Redefining the token alone
@@ -120,6 +117,114 @@
     --ak-rule: color-mix(in oklab, #101c26 16%, transparent);
     color: var(--sc-ink);
   }
+
+
+  /* --------------------------------------------------------------- tabs -- */
+  /* The chaptered grammar wants a margin folio and no fixed bar. The client
+     asked for tabs, so there are tabs: kept slim, right-aligned, and held
+     back until the title page has been left, so the first screen is still a
+     title page rather than a website with a menu on it. */
+  .tabs {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 60;
+    display: flex; justify-content: flex-end; align-items: center;
+    gap: clamp(0.25rem, 1.4vw, 1rem);
+    padding: var(--sc-3) clamp(1rem, 4vw, 2.5rem);
+    background: linear-gradient(180deg,
+      color-mix(in oklab, #060d16 78%, transparent), transparent);
+    opacity: 0; transform: translateY(-0.5rem);
+    transition: opacity var(--sc-d-base) var(--sc-ease-out),
+                transform var(--sc-d-base) var(--sc-ease-out);
+    pointer-events: none;
+  }
+  .tabs.is-shown { opacity: 1; transform: none; pointer-events: auto; }
+  .tabs__b {
+    appearance: none; border: 0; background: none; cursor: pointer;
+    white-space: nowrap;
+    font-family: var(--sc-font-text);
+    font-size: var(--sc-t-xs);
+    letter-spacing: var(--sc-track-wide);
+    text-transform: uppercase;
+    color: var(--sc-ink-soft);
+    padding: var(--sc-2) var(--sc-3);
+    border-radius: var(--sc-r-sm);
+    text-decoration: none;
+    transition: color var(--sc-d-fast) var(--sc-ease-out);
+  }
+  .tabs__b:hover { color: var(--sc-ink); }
+  .tabs__b:focus-visible { outline: 2px solid var(--sc-accent); outline-offset: 2px; }
+  .tabs__b[aria-current="page"] { color: var(--sc-ink); }
+  .tabs__b[aria-current="page"]::after {
+    content: ""; display: block; height: 1px; margin-top: 3px;
+    background: var(--sc-accent);
+  }
+  .tabs__b--cta { color: var(--sc-accent-ink); background: var(--sc-accent); }
+  .tabs__b--cta:hover { color: var(--sc-accent-ink); filter: brightness(1.08); }
+  .tabs__b--cta:active { transform: translateY(1px); }
+
+  /* At 390px the three labels plus their tracking measured 690px against a
+     390px viewport, which scrolls the body sideways. Tighter tracking, less
+     padding, and the first tab drops its article. */
+  @media (max-width: 560px) {
+    .tabs { gap: 0.1rem; padding-inline: 0.75rem; }
+    .tabs__b { letter-spacing: 0.045em; padding: var(--sc-2); font-size: 0.7rem; }
+    .tabs__b--cta { padding-inline: var(--sc-3); }
+    .tabs__page-word { display: none; }
+  }
+
+  /* ------------------------------------------------------------- apply -- */
+  .apply {
+    display: inline-flex; align-items: center; gap: var(--sc-3);
+    margin-top: var(--sc-7);
+    padding: var(--sc-4) var(--sc-6);
+    background: var(--sc-accent); color: var(--sc-accent-ink);
+    font-family: var(--sc-font-text); font-weight: 600;
+    font-size: var(--sc-t-sm);
+    letter-spacing: var(--sc-track-wide); text-transform: uppercase;
+    text-decoration: none; border-radius: var(--sc-r-md);
+    box-shadow: var(--sc-e2);
+    transition: transform var(--sc-d-fast) var(--sc-ease-out),
+                filter var(--sc-d-fast) var(--sc-ease-out);
+  }
+  .apply:hover { filter: brightness(1.07); transform: translateY(-1px); }
+  .apply:active { transform: translateY(1px); }
+  .apply:focus-visible { outline: 2px solid var(--sc-ink); outline-offset: 3px; }
+  .apply__arrow { transition: transform var(--sc-d-fast) var(--sc-ease-out); }
+  @media (hover: hover) and (pointer: fine) {
+    .apply:hover .apply__arrow { transform: translateX(3px); }
+  }
+
+  /* ----------------------------------------------------------- contact -- */
+  .view[hidden] { display: none; }
+  .contact {
+    min-height: 100svh;
+    display: flex; align-items: center;
+    padding-block: calc(var(--sc-section) + 3rem) var(--sc-section);
+    background: linear-gradient(180deg, rgba(6,13,22,0.72), rgba(6,13,22,0.92));
+  }
+  .contact__grid {
+    display: grid; gap: var(--sc-8);
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 900px) {
+    .contact__grid { grid-template-columns: 1.05fr 0.95fr; align-items: start; }
+  }
+  .contact__lines { display: grid; gap: var(--sc-6); }
+  .contact__line b {
+    display: block; font-family: var(--sc-font-text); font-size: var(--sc-t-xs);
+    letter-spacing: var(--sc-track-wide); text-transform: uppercase;
+    color: var(--sc-ink-soft); font-weight: 500; margin-bottom: var(--sc-2);
+  }
+  .contact__line a, .contact__line span {
+    overflow-wrap: anywhere;
+    font-family: var(--sc-font-display); font-weight: 600;
+    font-size: var(--sc-t-lg); line-height: 1.28;
+    letter-spacing: var(--sc-track-snug);
+    color: var(--sc-ink); text-decoration: none;
+    border-bottom: 1px solid color-mix(in oklab, var(--sc-accent) 55%, transparent);
+  }
+  .contact__line span { border-bottom: 0; }
+  .contact__line a:hover { border-bottom-color: var(--sc-accent); }
+  .contact__line a:focus-visible { outline: 2px solid var(--sc-accent); outline-offset: 3px; }
 
   /* ------------------------------------------------------------ folio -- */
   /* Not a nav bar. A running margin folio: where you are in the document,
@@ -138,7 +243,7 @@
     color: var(--sc-ink-soft);
     mix-blend-mode: difference;
   }
-  @media (min-width: 1024px) { .folio { display: flex; } }
+  @media (min-width: 1024px) { body:not(.is-contact) .folio { display: flex; } }
   .folio__n { font-variant-numeric: tabular-nums; color: var(--sc-ink); }
   .folio__t {
     writing-mode: vertical-rl; text-orientation: mixed;
@@ -446,6 +551,14 @@
   }
 
   /* ======================================================= 4 the people */
+  /* The rail travels sideways by transform, so its items stick out past the
+     viewport by design. Without clipping on the stage that becomes document
+     width, and the whole page scrolls sideways: at 390px the document
+     measured 690px wide. Clipping the stage, not the section, because the
+     stage is the sticky element and the section must stay unclipped for the
+     pin to work. */
+  .ch--people [data-sc-stage] { overflow: hidden; }
+
   .people__rail {
     min-height: 100svh;
     display: flex; align-items: center; gap: var(--sc-6);
@@ -509,8 +622,10 @@
   /* The close is a plate, not a button island. The invitation is a line of
      running text, and it holds. */
   .colophon { padding-block: var(--sc-section); min-height: 78svh; display: flex; align-items: center; }
-  .colophon__grid { display: grid; gap: var(--sc-6); }
+  .colophon > * { min-width: 0; }
+  .colophon__grid { display: grid; gap: var(--sc-6); min-width: 0; }
   .colophon__say {
+    overflow-wrap: anywhere;
     font-family: var(--sc-font-display);
     font-weight: 600;
     font-size: var(--sc-t-xl);
@@ -533,12 +648,16 @@
   }
   .colophon__meta {
     display: grid; gap: var(--sc-4) var(--sc-7);
-    grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+    /* min(11rem, 100%), not 11rem. A bare minmax floor cannot shrink below
+       its minimum, so during intrinsic sizing auto-fit resolves more tracks
+       than actually fit and the grid reports a min-content width wider than
+       the viewport. That was the whole horizontal overflow on a phone. */
+    grid-template-columns: repeat(auto-fit, minmax(min(11rem, 100%), 1fr));
     max-width: 52rem;
     padding-top: var(--sc-5);
     border-top: 1px solid var(--ak-rule);
   }
-  .colophon__meta div { font-family: var(--sc-font-text); font-size: var(--sc-t-sm); color: var(--sc-ink-soft); line-height: 1.6; }
+  .colophon__meta div { overflow-wrap: anywhere; font-family: var(--sc-font-text); font-size: var(--sc-t-sm); color: var(--sc-ink-soft); line-height: 1.6; }
   .colophon__meta b { display: block; font-size: var(--sc-t-xs); letter-spacing: var(--sc-track-wide); text-transform: uppercase; color: var(--sc-ink); font-weight: 500; margin-bottom: var(--sc-1); }
   .colophon__meta a { color: inherit; text-decoration: underline; text-underline-offset: 0.18em; }
   .colophon__meta a:focus-visible { outline: 2px solid var(--sc-accent); outline-offset: 2px; }
@@ -548,9 +667,15 @@
 
 <div class="night" aria-hidden="true">
   <div class="night__photo" data-city></div>
-  <canvas class="night__city" data-skyline></canvas>
+  <canvas class="night__city" data-city3d></canvas>
 </div>
 <div class="sc-grain" aria-hidden="true"></div>
+
+<nav class="tabs" data-tabs aria-label="Sections">
+  <a class="tabs__b" href="#page" data-tab="page" aria-current="page"><span class="tabs__page-word">The </span>Page</a>
+  <a class="tabs__b" href="#contact" data-tab="contact">Contact</a>
+  <a class="tabs__b tabs__b--cta" href="https://www.akaladeconsulting.com/careers" target="_blank" rel="noopener">Apply</a>
+</nav>
 
 <aside class="folio" aria-hidden="true">
   <span class="folio__n" data-folio-n>00</span>
@@ -558,7 +683,7 @@
   <span class="folio__t" data-folio-t>Title</span>
 </aside>
 
-<main>
+<main class="view" id="page" data-view="page">
 
   <!-- =============================================== 0 · TITLE PAGE ===== -->
   <section class="ch ch--title" data-ch="00" data-ch-title="Title">
@@ -714,15 +839,22 @@
             <p class="say__lead">Where you are</p>
             <strong class="say__line" data-say-line>Today I am learning how to open a conversation.</strong>
             <div class="say__wipe" aria-hidden="true"></div>
+            <a class="apply" href="https://www.akaladeconsulting.com/careers"
+               target="_blank" rel="noopener">
+              Apply to Akalade
+              <span class="apply__arrow" aria-hidden="true">&#8594;</span>
+            </a>
           </div>
         </div>
 
-        <p class="ak-p" data-sc-cue="0.5 1 0.15 0.05" style="max-width:46ch">
-          Those four rungs are the ones Akalade names in its own words. The pace
-          between them is not promised here, because it depends on performance.
-          Ask about it in the interview, and ask for the name of somebody who
-          did it.
-        </p>
+        <div data-sc-cue="0.5 1 0.15 0.05">
+          <p class="ak-p" style="max-width:46ch">
+            Those four rungs are the ones Akalade names in its own words. The
+            pace between them is not promised here, because it depends on
+            performance. Ask about it in the interview, and ask for the name of
+            somebody who did it.
+          </p>
+        </div>
       </div>
     </div>
   </section>
@@ -748,7 +880,7 @@
         </div>
 
         <div class="rail__item" data-s="1">
-          <figure class="voice">
+          <figure class="voice" data-sc-tilt="7">
             <img class="ak-fig ak-fig--sq" src="assets/img/culture-01.webp" width="900" height="1125"
                  loading="lazy" alt="The team gathered in front of the office plant wall.">
             <figcaption class="voice__cap">The wall everybody ends up standing in front of.</figcaption>
@@ -756,7 +888,7 @@
         </div>
 
         <div class="rail__item" data-s="2">
-          <figure class="voice">
+          <figure class="voice" data-sc-tilt="7">
             <img class="ak-fig ak-fig--sq" src="assets/img/culture-02.webp" width="900" height="1125"
                  loading="lazy" alt="A large group at a company event holding photo-booth props in a hotel atrium.">
             <figcaption class="voice__cap">A company night out, props and all.</figcaption>
@@ -764,7 +896,7 @@
         </div>
 
         <div class="rail__item" data-s="3">
-          <figure class="voice">
+          <figure class="voice" data-sc-tilt="7">
             <img class="ak-fig ak-fig--sq" src="assets/img/culture-03.webp" width="900" height="1125"
                  loading="lazy" alt="Seven colleagues together in an office corridor.">
             <figcaption class="voice__cap">Between sessions, in the corridor.</figcaption>
@@ -772,7 +904,7 @@
         </div>
 
         <div class="rail__item" data-s="4">
-          <figure class="voice">
+          <figure class="voice" data-sc-tilt="7">
             <img class="ak-fig ak-fig--sq" src="assets/img/culture-04.webp" width="900" height="1125"
                  loading="lazy" alt="Five colleagues in front of a conference banner reading ALL GAS.">
             <figcaption class="voice__cap">At a conference, on somebody else's stage.</figcaption>
@@ -780,7 +912,7 @@
         </div>
 
         <div class="rail__item" data-s="5">
-          <figure class="voice">
+          <figure class="voice" data-sc-tilt="7">
             <img class="ak-fig ak-fig--sq" src="assets/img/culture-05.webp" width="900" height="1125"
                  loading="lazy" alt="Colleagues around a table at a bar after work, drinks in front of them.">
             <figcaption class="voice__cap">After a shift, which is most of how a team gets made.</figcaption>
@@ -788,7 +920,7 @@
         </div>
 
         <div class="rail__item" data-s="6">
-          <figure class="voice">
+          <figure class="voice" data-sc-tilt="7">
             <img class="ak-fig ak-fig--sq" src="assets/img/culture-06.webp" width="900" height="1125"
                  loading="lazy" alt="Two colleagues shaking hands in a conference hall.">
             <figcaption class="voice__cap">The handshake this whole job is built on.</figcaption>
@@ -872,8 +1004,8 @@
 
         <p class="colophon__say">
           If the second chapter did not put you off, that is the useful signal.
-          Write to <a href="mailto:arieanna@akaladeconsulting.com">arieanna@akaladeconsulting.com</a>
-          and say which chapter you want to ask about.
+          <a href="mailto:arieanna@akaladeconsulting.com">Write to us</a> and say
+          which chapter you want to ask about.
         </p>
 
         <div class="colophon__meta">
@@ -888,7 +1020,53 @@
 
 </main>
 
+<section class="view" id="contact" data-view="contact" hidden>
+  <div class="ak-wrap contact">
+    <div style="width:100%">
+      <hr class="ak-rule">
+      <p class="ak-label" style="margin-top:var(--sc-4)">Contact</p>
+      <h2 class="ak-h ak-h--ch" style="margin-top:var(--sc-4);max-width:18ch">
+        Garden City, and a phone that gets answered.
+      </h2>
+
+      <div class="contact__grid" style="margin-top:var(--sc-8)">
+        <div class="contact__lines">
+          <p class="contact__line"><b>Write</b>
+            <a href="mailto:arieanna@akaladeconsulting.com">arieanna@akaladeconsulting.com</a></p>
+          <p class="contact__line"><b>Call</b>
+            <a href="tel:+16316108975">(631) 610-8975</a></p>
+          <p class="contact__line"><b>Visit</b>
+            <span>100 Quentin Roosevelt Blvd, Suite 108<br>Garden City, NY 11530</span></p>
+          <p class="contact__line"><b>Apply</b>
+            <a href="https://www.akaladeconsulting.com/careers" target="_blank" rel="noopener">The application form</a></p>
+        </div>
+
+        <div>
+          <p class="ak-p">
+            If you are writing about a job, say which chapter you want to ask
+            about. It is a faster conversation than a covering letter, and it
+            tells us you actually read the thing.
+          </p>
+          <p class="ak-p" style="margin-top:var(--sc-5)">
+            If you are writing about work for your brand, Akalade runs direct
+            marketing and customer acquisition out of Garden City, face to face,
+            inside large format retail.
+          </p>
+          <div class="ak-note" style="margin-top:var(--sc-7)">
+            <b>The form still lives on the current site</b>
+            This page links to it rather than reproducing it. A form that
+            collects a name and an email needs somewhere to send them, and this
+            draft has no backend, so it does not pretend to have one.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
 <script src="scrollcraft.js"></script>
+<script src="city3d.js"></script>
 <script>ScrollCraft.mount(document.body);</script>
 <script>
 /* ==========================================================================
@@ -987,120 +1165,59 @@
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(measure);
 
 
-  /* ------------------------------------------------------- the skyline -- */
-  /* Drawn on a canvas rather than hand-authored as SVG paths, because this is
-     a generative graphic: three ranks of towers with lit windows, seeded so
-     the same skyline comes back on every load and on every redeploy. A page
-     whose horizon reshuffles on each visit reads as noise. */
-  (function skyline() {
-    var cv = document.querySelector("[data-skyline]");
-    if (!cv) return;
-    var ctx = cv.getContext("2d");
-    if (!ctx) return;
 
-    var still = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    /* A fixed seed: deterministic, so the horizon is a place rather than a
-       different city every time somebody opens the page. */
-    var seed = 20230629;                       // the date Akalade was filed
-    function rnd() {
-      seed = (seed * 1664525 + 1013904223) % 4294967296;
-      return seed / 4294967296;
-    }
+  /* ------------------------------------------------------- tabs + views -- */
+  /* Two views in one document. The contact view is a real destination with
+     its own hash and its own history entry, so Back works and the link is
+     shareable, but it does not cost a page load. */
+  (function views() {
+    var tabs = document.querySelector("[data-tabs]");
+    if (!tabs) return;
+    var views = [].slice.call(document.querySelectorAll("[data-view]"));
+    var buttons = [].slice.call(tabs.querySelectorAll("[data-tab]"));
 
-    var RANKS = [
-      { depth: 0.34, h: [0.26, 0.52], w: [26, 54], fill: "#16324a", win: 0.14, lit: 0.26 },
-      { depth: 0.62, h: [0.40, 0.76], w: [34, 68], fill: "#0c1e2e", win: 0.24, lit: 0.55 },
-      { depth: 1.00, h: [0.54, 1.00], w: [44, 92], fill: "#050b12", win: 0.30, lit: 0.92 }
-    ];
-
-    var towers = [];   // built once, in CSS pixels, then scaled to the canvas
-    var W = 0, H = 0, dpr = 1;
-
-    function build() {
-      towers = [];
-      seed = 20230629;
-      for (var r = 0; r < RANKS.length; r++) {
-        var rank = RANKS[r], x = -40;
-        while (x < W + 40) {
-          var w = rank.w[0] + rnd() * (rank.w[1] - rank.w[0]);
-          var h = H * (rank.h[0] + rnd() * (rank.h[1] - rank.h[0]));
-          var t = { r: r, x: x, w: w, h: h, windows: [] };
-          /* Windows on a grid, most of them dark. A tower where every window
-             is lit reads as a lightbox, not a building at night. */
-          var cols = Math.max(1, Math.floor(w / 11));
-          var rows = Math.max(1, Math.floor(h / 15));
-          for (var c = 0; c < cols; c++) {
-            for (var q = 0; q < rows; q++) {
-              if (rnd() > rank.win) continue;
-              t.windows.push({
-                x: 5 + c * 11, y: 9 + q * 15,
-                a: rank.lit * (0.45 + rnd() * 0.55),
-                phase: rnd()
-              });
-            }
-          }
-          towers.push(t);
-          x += w + 3 + rnd() * 12;
-        }
-      }
-    }
-
-    function resize() {
-      dpr = Math.min(devicePixelRatio || 1, 2);
-      W = cv.clientWidth; H = cv.clientHeight;
-      if (!W || !H) return;
-      cv.width = Math.round(W * dpr);
-      cv.height = Math.round(H * dpr);
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      build();
-      draw(0);
-    }
-
-    function draw(t) {
-      if (!W || !H) return;
-      ctx.clearRect(0, 0, W, H);
-      for (var i = 0; i < towers.length; i++) {
-        var tw = towers[i], rank = RANKS[tw.r];
-        ctx.fillStyle = rank.fill;
-        ctx.fillRect(tw.x, H - tw.h, tw.w, tw.h);
-        /* Edge light: a one-pixel lip catches the sky, which is what stops
-           three flat silhouettes reading as three flat silhouettes. */
-        ctx.fillStyle = "rgba(180,205,228," + (0.06 + rank.depth * 0.10).toFixed(3) + ")";
-        ctx.fillRect(tw.x, H - tw.h, tw.w, 1);
-
-        for (var j = 0; j < tw.windows.length; j++) {
-          var win = tw.windows[j];
-          if (win.y > tw.h - 8) continue;
-          var a = win.a;
-          if (!still) {
-            /* One slow cycle per window, each offset by its own phase, so
-               lights go out and come back across the whole skyline instead
-               of pulsing together. */
-            var k = Math.sin((t / 9000 + win.phase) * Math.PI * 2);
-            a *= 0.72 + 0.28 * k;
-          }
-          ctx.fillStyle = "rgba(255,180,84," + a.toFixed(3) + ")";
-          ctx.fillRect(tw.x + win.x, H - tw.h + win.y, 3 + rank.depth * 2, 5 + rank.depth * 2);
-        }
-      }
-    }
-
-    var raf = 0;
-    function loop(t) { draw(t); raf = requestAnimationFrame(loop); }
-
-    resize();
-    addEventListener("resize", resize, { passive: true });
-
-    if (!still) {
-      /* Only animate while the skyline is actually on screen. It is fixed, so
-         it always is, but a backgrounded tab should not keep painting. */
-      document.addEventListener("visibilitychange", function () {
-        if (document.hidden) { cancelAnimationFrame(raf); raf = 0; }
-        else if (!raf) raf = requestAnimationFrame(loop);
+    function show(name, push) {
+      var found = false;
+      views.forEach(function (v) {
+        var on = v.getAttribute("data-view") === name;
+        v.hidden = !on;
+        if (on) found = true;
       });
-      raf = requestAnimationFrame(loop);
+      if (!found) return show("page", push);
+      buttons.forEach(function (b) {
+        if (b.getAttribute("data-tab") === name) b.setAttribute("aria-current", "page");
+        else b.removeAttribute("aria-current");
+      });
+      /* The engine measures pinned acts against the document height. Showing
+         or hiding a whole view changes that height, so it has to re-measure
+         or every act's scroll range is stale. */
+      if (window.ScrollCraft && ScrollCraft.instances) {
+        ScrollCraft.instances.forEach(function (i) { if (i.layout) i.layout(); });
+      }
+      if (push) history.pushState({ view: name }, "", name === "page" ? "#page" : "#" + name);
+      scrollTo(0, 0);
+      tabs.classList.toggle("is-shown", name !== "page");
+      document.body.classList.toggle("is-contact", name === "contact");
     }
+
+    buttons.forEach(function (b) {
+      var name = b.getAttribute("data-tab");
+      b.addEventListener("click", function (e) { e.preventDefault(); show(name, true); });
+    });
+    addEventListener("popstate", function (e) {
+      show((e.state && e.state.view) || (location.hash || "#page").slice(1), false);
+    });
+
+    var start = (location.hash || "#page").slice(1);
+    show(start === "contact" ? "contact" : "page", false);
+
+    /* Held back until the title page is behind you: the first screen stays a
+       title page rather than a website with a menu bolted on. */
+    addEventListener("scroll", function () {
+      if (document.querySelector('[data-view="contact"]').hidden === false) return;
+      tabs.classList.toggle("is-shown", scrollY > innerHeight * 0.6);
+    }, { passive: true });
   })();
 
   /* Document progress for the folio bar. */
