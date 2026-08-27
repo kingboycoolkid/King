@@ -5,24 +5,34 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Akalade · Better connections, brighter futures</title>
 <meta name="description" content="A sales and marketing company in Garden City, New York. What the job is, what the path looks like, and who you would be working for.">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%2307090C'/><rect x='9' y='20' width='14' height='2.5' fill='%23FF6A3D'/></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='7' fill='%230C1821'/><rect x='9' y='20' width='14' height='2.5' fill='%23FFB454'/></svg>">
 <link rel="preload" href="assets/fonts/archivo-var.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="assets/fonts/geist-var.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="assets/fonts.css">
 <link rel="stylesheet" href="scrollcraft.css">
 <style>
   /* ======================================================================
-     Akalade. Precision futurism: cold graphite ground, one warm signal
-     accent, thin rules, measured motion. The accent owns two roles and
-     nothing else: the reader's own position, and the invitation.
+     Akalade. The brand's own navy, #0C1821, taken off the live site and
+     built out into a night: one continuous city ground the page travels
+     over, chapters cutting between densities of it rather than between
+     slabs, and a single warm amber standing in for the light in a window.
+     The accent owns three roles and nothing else: the reader's own
+     position on the ladder, the invitation, and the glow on the horizon.
      ====================================================================== */
   :root {
-    --sc-canvas:      #07090c;
-    --sc-surface:     #0e1218;
-    --sc-ink:         #e9edf2;
-    --sc-ink-soft:    #8b97a6;
-    --sc-accent:      #ff6a3d;
-    --sc-accent-ink:  #0b0e12;
+    /* Akalade's own navy, #0C1821, taken off the live site and made the
+       ground the whole page is built on. Everything else is that hue at a
+       different depth, so the page reads as one blue rather than as a dark
+       theme with blue in it. */
+    --sc-canvas:      #0a1420;
+    --sc-surface:     #16273a;
+    --sc-ink:         #eaf1f8;
+    --sc-ink-soft:    #93a9be;   /* tinted to the canvas hue, never flat grey */
+    --sc-accent:      #ffb454;   /* the warm light in a window after dark */
+    --sc-accent-ink:  #0a1420;
+
+    --ak-navy:        #0c1821;   /* the brand value itself */
+    --ak-steel:       #2b5672;   /* their secondary */
 
     --sc-font-display: "Archivo", system-ui, sans-serif;
     --sc-font-text:    "Geist", system-ui, sans-serif;
@@ -35,24 +45,79 @@
 
   body { background: var(--sc-canvas); }
 
+  /* ---------------------------------------------------- the night city -- */
+  /* One fixed ground the whole page travels over, so the dark chapters are
+     a place rather than an absence. The gradient is the floor: it carries
+     the horizon glow on its own, so the page is never flat even before the
+     photograph loads on top of it. */
+  .night {
+    position: fixed; inset: 0; z-index: -2;
+    background:
+      radial-gradient(140% 82% at 50% 112%,
+        color-mix(in oklab, var(--sc-accent) 34%, transparent) 0%,
+        color-mix(in oklab, var(--ak-steel) 58%, transparent) 24%,
+        transparent 64%),
+      radial-gradient(90% 60% at 78% 8%,
+        color-mix(in oklab, var(--ak-steel) 30%, transparent) 0%, transparent 55%),
+      linear-gradient(180deg, #04080e 0%, #081420 42%, #12293c 78%, #1b3d55 100%);
+  }
+  /* The skyline is drawn, not photographed. Three ranks of towers, the far
+     ones smaller, softer and lower in contrast, which is depth doing its
+     own work rather than a blur filter pretending to. Windows go out and
+     come back one at a time, slowly, because that is the whole idea: it is
+     a city that does not sleep, not a city that blinks. */
+  .night__city {
+    position: absolute; inset: auto 0 0 0; height: min(40vh, 26rem);
+    width: 100%; display: block;
+    transform: translateY(calc(var(--ak-doc, 0) * 14%));
+    will-change: transform;
+  }
+  @media (prefers-reduced-motion: reduce) { .night__city { transform: none; } }
+
+  .night__photo {
+    position: absolute; inset: -6% 0;
+    background-image: var(--ak-city, none);
+    background-size: cover;
+    background-position: 50% 40%;
+    opacity: 0.5;
+    /* Fade the photograph out top and bottom so it reads as depth behind
+       the page rather than as a picture pasted under it. */
+    -webkit-mask-image: linear-gradient(180deg, transparent, #000 22%, #000 74%, transparent);
+    mask-image: linear-gradient(180deg, transparent, #000 22%, #000 74%, transparent);
+    transform: translateY(calc(var(--ak-doc, 0) * -6%));
+    will-change: transform;
+  }
+  @media (prefers-reduced-motion: reduce) { .night__photo { transform: none; } }
+
   /* Chapters cut hard to their own ground and stay there. No interpolation:
      a cut is not a gradient, and this grammar exists to refuse the softness. */
-  .ch            { position: relative; background: #07090c; }
-  .ch--room      { background: #0b0e13; }
-  .ch--work      { background: #edeff2; }
-  .ch--path      { background: #06080b; }
-  .ch--people    { background: #0b0e13; }
-  .ch--who       { background: #10141a; }
-  .ch--colophon  { background: #07090c; }
+  /* Chapters still cut hard, but they cut between DENSITIES of the same
+     night rather than between opaque slabs. The city stays continuous
+     underneath; how much of it each chapter lets through is the cut. The
+     one exception is the paper chapter, which is opaque on purpose: it is
+     the page stepping out of the dark to say something plainly. */
+  .ch            { position: relative; }
+  /* Denser toward the bottom, which is where the copy meets the lit
+     windows. Density where the text is, and the sky left alone. */
+  .ch--title     { background: linear-gradient(180deg,
+                     rgba(6,13,22,0.30) 0%,
+                     rgba(7,16,26,0.55) 42%,
+                     rgba(8,18,29,0.86) 100%); }
+  .ch--room      { background: color-mix(in oklab, var(--ak-navy) 88%, transparent); }
+  .ch--work      { background: #e4eaf0; }
+  .ch--path      { background: color-mix(in oklab, #060d16 78%, transparent); }
+  .ch--people    { background: color-mix(in oklab, var(--ak-navy) 82%, transparent); }
+  .ch--who       { background: color-mix(in oklab, #111f2c 90%, transparent); }
+  .ch--colophon  { background: linear-gradient(180deg, rgba(10,20,32,0.80), rgba(6,13,22,0.94)); }
 
   /* The light chapter re-inks its own subtree. Redefining the token alone
      does nothing: `color` resolved on <body> and is inherited as a computed
      value, so the declaration below is what actually re-inks the text. */
   .ch--work {
-    --sc-ink: #14171c;
-    --sc-ink-soft: #545e6b;
-    --sc-accent: #c8431d;          /* same hue, second lightness, for paper */
-    --ak-rule: color-mix(in oklab, #14171c 16%, transparent);
+    --sc-ink: #101c26;
+    --sc-ink-soft: #4e6273;
+    --sc-accent: #8a4e05;          /* same hue, second lightness, for paper */
+    --ak-rule: color-mix(in oklab, #101c26 16%, transparent);
     color: var(--sc-ink);
   }
 
@@ -153,6 +218,16 @@
     border-radius: var(--sc-r-md);
     overflow: hidden;
   }
+  .ak-fig { width: 100%; height: auto; display: block;
+            border-radius: var(--sc-r-md);
+            /* Photographs shot in a bright office sit on a night ground, so
+               they are seated rather than pasted: a hairline, a cast shadow
+               tinted to the canvas, and a touch of the ground's own blue
+               brought back into the shadows. */
+            border: 1px solid color-mix(in oklab, var(--sc-ink) 10%, transparent);
+            box-shadow: var(--sc-e2);
+            filter: saturate(0.92) contrast(1.03); }
+  .ak-fig--sq { aspect-ratio: 4 / 5; object-fit: cover; }
   .ak-ph--32 { aspect-ratio: 3 / 2; }
   .ak-ph--45 { aspect-ratio: 4 / 5; }
   .ak-ph--11 { aspect-ratio: 1 / 1; }
@@ -376,7 +451,7 @@
     display: flex; align-items: center; gap: var(--sc-6);
     padding-inline: max(var(--sc-gutter), var(--ak-folio-w)) var(--sc-gutter);
   }
-  .rail__item { flex: 0 0 clamp(17rem, 27vw, 23rem); display: flex; }
+  .rail__item { flex: 0 0 clamp(15rem, 23vw, 20rem); display: flex; }
   .rail__item--head { flex-basis: clamp(14rem, 22vw, 19rem); }
   .rail__item--note { flex-basis: clamp(15rem, 24vw, 21rem); }
 
@@ -385,8 +460,15 @@
      feature. Hairline and space, no filled tile. */
   .voice {
     display: flex; flex-direction: column; gap: var(--sc-4);
-    padding-top: var(--sc-4);
-    border-top: 1px solid var(--ak-rule);
+    margin: 0;
+  }
+  .voice__cap {
+    margin-top: 0;
+    font-family: var(--sc-font-text);
+    font-size: var(--sc-t-sm);
+    line-height: 1.5;
+    color: var(--sc-ink-soft);
+    max-width: 32ch;
   }
   .voice__q {
     font-family: var(--sc-font-text);
@@ -464,6 +546,10 @@
 </head>
 <body>
 
+<div class="night" aria-hidden="true">
+  <div class="night__photo" data-city></div>
+  <canvas class="night__city" data-skyline></canvas>
+</div>
 <div class="sc-grain" aria-hidden="true"></div>
 
 <aside class="folio" aria-hidden="true">
@@ -508,17 +594,12 @@
 
       <div class="room__grid">
         <figure class="room__fig" data-sc-reveal="up" data-sc-reveal-at="0.05 0.5">
-          <div class="ak-ph ak-ph--32" role="img"
-               aria-label="Placeholder for a photograph of the Garden City floor during a shift">
-            <span class="ak-ph__spec">
-              <b>Photograph pending</b>
-              3:2 · the floor mid shift, available light, nobody posing
-            </span>
-          </div>
+          <img class="ak-fig" src="assets/img/room.webp" width="1600" height="1067"
+               alt="The Akalade team standing together in the Garden City office, in front of a living plant wall.">
           <figcaption>
-            <b>Quentin Roosevelt Boulevard, Garden City.</b>
-            Most of the day happens standing up, inside a retail space, in front
-            of somebody who did not plan on talking to you.
+            <b>The office, Quentin Roosevelt Boulevard.</b>
+            This is the room you would come back to. The work itself happens
+            out there, in front of people who did not plan on talking to you.
           </figcaption>
         </figure>
 
@@ -552,14 +633,10 @@
       <div class="work__spread">
         <aside class="work__aside" data-sc-in>
           <figure style="margin:0">
-            <div class="ak-ph ak-ph--45" role="img"
-                 aria-label="Placeholder for a close photograph of an account manager mid conversation">
-              <span class="ak-ph__spec">
-                <b>Photograph pending</b>
-                4:5 · an account manager mid conversation, close, working light
-              </span>
-            </div>
-            <figcaption>Day one looks like this, and so does day two hundred.</figcaption>
+            <img class="ak-fig" src="assets/img/training.webp" width="900" height="1125"
+                 alt="An Akalade team member presenting to a room during a training session.">
+            <figcaption>Training, on an ordinary weekday. Day one looks like
+              this, and so does day two hundred.</figcaption>
           </figure>
         </aside>
 
@@ -663,67 +740,67 @@
             <h2 class="ak-h ak-h--ch" style="font-size:var(--sc-t-xl);max-width:14ch">
               The people already here.
             </h2>
+            <p class="ak-p" style="margin-top:var(--sc-5);font-size:var(--sc-t-sm)">
+              Every photograph in this chapter is Akalade's own, taken on days
+              nobody was building a careers page.
+            </p>
           </header>
         </div>
 
         <div class="rail__item" data-s="1">
           <figure class="voice">
-            <div class="ak-ph ak-ph--11" role="img" aria-label="Placeholder for an employee portrait">
-              <span class="ak-ph__spec"><b>Portrait pending</b>1:1 · eye level</span>
-            </div>
-            <blockquote class="voice__q">Real quote goes here. Twenty to forty five words, first person, in the words they actually used.</blockquote>
-            <figcaption class="voice__who">
-              <span class="voice__name">Name, on the record</span>
-              <span class="voice__role">Role · months at Akalade</span>
-            </figcaption>
+            <img class="ak-fig ak-fig--sq" src="assets/img/culture-01.webp" width="900" height="1125"
+                 loading="lazy" alt="The team gathered in front of the office plant wall.">
+            <figcaption class="voice__cap">The wall everybody ends up standing in front of.</figcaption>
           </figure>
         </div>
 
         <div class="rail__item" data-s="2">
           <figure class="voice">
-            <div class="ak-ph ak-ph--11" role="img" aria-label="Placeholder for an employee portrait">
-              <span class="ak-ph__spec"><b>Portrait pending</b>1:1 · eye level</span>
-            </div>
-            <blockquote class="voice__q">Ask this one about the first month specifically. The hardest part, and what changed it.</blockquote>
-            <figcaption class="voice__who">
-              <span class="voice__name">Name, on the record</span>
-              <span class="voice__role">Role · months at Akalade</span>
-            </figcaption>
+            <img class="ak-fig ak-fig--sq" src="assets/img/culture-02.webp" width="900" height="1125"
+                 loading="lazy" alt="A large group at a company event holding photo-booth props in a hotel atrium.">
+            <figcaption class="voice__cap">A company night out, props and all.</figcaption>
           </figure>
         </div>
 
         <div class="rail__item" data-s="3">
           <figure class="voice">
-            <div class="ak-ph ak-ph--11" role="img" aria-label="Placeholder for an employee portrait">
-              <span class="ak-ph__spec"><b>Portrait pending</b>1:1 · eye level</span>
-            </div>
-            <blockquote class="voice__q">Ask this one what they would tell somebody deciding tonight whether to take the interview.</blockquote>
-            <figcaption class="voice__who">
-              <span class="voice__name">Name, on the record</span>
-              <span class="voice__role">Role · months at Akalade</span>
-            </figcaption>
+            <img class="ak-fig ak-fig--sq" src="assets/img/culture-03.webp" width="900" height="1125"
+                 loading="lazy" alt="Seven colleagues together in an office corridor.">
+            <figcaption class="voice__cap">Between sessions, in the corridor.</figcaption>
           </figure>
         </div>
 
         <div class="rail__item" data-s="4">
           <figure class="voice">
-            <div class="ak-ph ak-ph--11" role="img" aria-label="Placeholder for an employee portrait">
-              <span class="ak-ph__spec"><b>Portrait pending</b>1:1 · eye level</span>
-            </div>
-            <blockquote class="voice__q">Ask this one about the day they nearly quit, and what the week after that looked like.</blockquote>
-            <figcaption class="voice__who">
-              <span class="voice__name">Name, on the record</span>
-              <span class="voice__role">Role · months at Akalade</span>
-            </figcaption>
+            <img class="ak-fig ak-fig--sq" src="assets/img/culture-04.webp" width="900" height="1125"
+                 loading="lazy" alt="Five colleagues in front of a conference banner reading ALL GAS.">
+            <figcaption class="voice__cap">At a conference, on somebody else's stage.</figcaption>
           </figure>
         </div>
 
-        <div class="rail__item rail__item--note" data-s="5">
-          <div class="ak-note" style="margin-top:var(--sc-6)">
-            <b>Four real people, not four reviews</b>
-            A named colleague with a face and a length of service outweighs any
-            number of anonymous star ratings, and it is the version of this
-            chapter that survives a candidate checking it.
+        <div class="rail__item" data-s="5">
+          <figure class="voice">
+            <img class="ak-fig ak-fig--sq" src="assets/img/culture-05.webp" width="900" height="1125"
+                 loading="lazy" alt="Colleagues around a table at a bar after work, drinks in front of them.">
+            <figcaption class="voice__cap">After a shift, which is most of how a team gets made.</figcaption>
+          </figure>
+        </div>
+
+        <div class="rail__item" data-s="6">
+          <figure class="voice">
+            <img class="ak-fig ak-fig--sq" src="assets/img/culture-06.webp" width="900" height="1125"
+                 loading="lazy" alt="Two colleagues shaking hands in a conference hall.">
+            <figcaption class="voice__cap">The handshake this whole job is built on.</figcaption>
+          </figure>
+        </div>
+
+        <div class="rail__item rail__item--note" data-s="7">
+          <div class="ak-note">
+            <b>Four voices go here</b>
+            Named colleagues, on the record, with a role and a length of
+            service. That is the one thing this chapter still cannot fake, and
+            the one thing a candidate will weigh hardest.
           </div>
         </div>
 
@@ -746,13 +823,8 @@
       <div class="who__grid">
         <div class="who__figwrap" data-sc-reveal="left" data-sc-reveal-at="0.08 0.55">
           <figure style="margin:0" data-sc-parallax="0.5">
-            <div class="ak-ph ak-ph--45" role="img"
-                 aria-label="Placeholder for a portrait of Kevin Tomczyk">
-              <span class="ak-ph__spec">
-                <b>Portrait pending</b>
-                4:5 · environmental, not studio
-              </span>
-            </div>
+            <img class="ak-fig" src="assets/img/crowd.webp" width="900" height="1125"
+                 alt="Looking down on commuters crossing a pale concourse floor, seen from above.">
           </figure>
         </div>
 
@@ -781,10 +853,10 @@
           </p>
 
           <div class="ak-note">
-            <b>Management team still to come</b>
-            Names, titles and one line each, with the same photographic
-            treatment. Keep it to the people a new hire would actually work
-            under in their first six months.
+            <b>Two photographs still needed here</b>
+            A portrait of Kevin, and the management team. Neither exists on the
+            current site: its management page carries the copy above and no
+            photograph, so nothing here guesses at which face is whose.
           </div>
         </div>
       </div>
@@ -913,6 +985,123 @@
   measure();
   addEventListener("resize", measure, { passive: true });
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(measure);
+
+
+  /* ------------------------------------------------------- the skyline -- */
+  /* Drawn on a canvas rather than hand-authored as SVG paths, because this is
+     a generative graphic: three ranks of towers with lit windows, seeded so
+     the same skyline comes back on every load and on every redeploy. A page
+     whose horizon reshuffles on each visit reads as noise. */
+  (function skyline() {
+    var cv = document.querySelector("[data-skyline]");
+    if (!cv) return;
+    var ctx = cv.getContext("2d");
+    if (!ctx) return;
+
+    var still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    /* A fixed seed: deterministic, so the horizon is a place rather than a
+       different city every time somebody opens the page. */
+    var seed = 20230629;                       // the date Akalade was filed
+    function rnd() {
+      seed = (seed * 1664525 + 1013904223) % 4294967296;
+      return seed / 4294967296;
+    }
+
+    var RANKS = [
+      { depth: 0.34, h: [0.26, 0.52], w: [26, 54], fill: "#16324a", win: 0.14, lit: 0.26 },
+      { depth: 0.62, h: [0.40, 0.76], w: [34, 68], fill: "#0c1e2e", win: 0.24, lit: 0.55 },
+      { depth: 1.00, h: [0.54, 1.00], w: [44, 92], fill: "#050b12", win: 0.30, lit: 0.92 }
+    ];
+
+    var towers = [];   // built once, in CSS pixels, then scaled to the canvas
+    var W = 0, H = 0, dpr = 1;
+
+    function build() {
+      towers = [];
+      seed = 20230629;
+      for (var r = 0; r < RANKS.length; r++) {
+        var rank = RANKS[r], x = -40;
+        while (x < W + 40) {
+          var w = rank.w[0] + rnd() * (rank.w[1] - rank.w[0]);
+          var h = H * (rank.h[0] + rnd() * (rank.h[1] - rank.h[0]));
+          var t = { r: r, x: x, w: w, h: h, windows: [] };
+          /* Windows on a grid, most of them dark. A tower where every window
+             is lit reads as a lightbox, not a building at night. */
+          var cols = Math.max(1, Math.floor(w / 11));
+          var rows = Math.max(1, Math.floor(h / 15));
+          for (var c = 0; c < cols; c++) {
+            for (var q = 0; q < rows; q++) {
+              if (rnd() > rank.win) continue;
+              t.windows.push({
+                x: 5 + c * 11, y: 9 + q * 15,
+                a: rank.lit * (0.45 + rnd() * 0.55),
+                phase: rnd()
+              });
+            }
+          }
+          towers.push(t);
+          x += w + 3 + rnd() * 12;
+        }
+      }
+    }
+
+    function resize() {
+      dpr = Math.min(devicePixelRatio || 1, 2);
+      W = cv.clientWidth; H = cv.clientHeight;
+      if (!W || !H) return;
+      cv.width = Math.round(W * dpr);
+      cv.height = Math.round(H * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      build();
+      draw(0);
+    }
+
+    function draw(t) {
+      if (!W || !H) return;
+      ctx.clearRect(0, 0, W, H);
+      for (var i = 0; i < towers.length; i++) {
+        var tw = towers[i], rank = RANKS[tw.r];
+        ctx.fillStyle = rank.fill;
+        ctx.fillRect(tw.x, H - tw.h, tw.w, tw.h);
+        /* Edge light: a one-pixel lip catches the sky, which is what stops
+           three flat silhouettes reading as three flat silhouettes. */
+        ctx.fillStyle = "rgba(180,205,228," + (0.06 + rank.depth * 0.10).toFixed(3) + ")";
+        ctx.fillRect(tw.x, H - tw.h, tw.w, 1);
+
+        for (var j = 0; j < tw.windows.length; j++) {
+          var win = tw.windows[j];
+          if (win.y > tw.h - 8) continue;
+          var a = win.a;
+          if (!still) {
+            /* One slow cycle per window, each offset by its own phase, so
+               lights go out and come back across the whole skyline instead
+               of pulsing together. */
+            var k = Math.sin((t / 9000 + win.phase) * Math.PI * 2);
+            a *= 0.72 + 0.28 * k;
+          }
+          ctx.fillStyle = "rgba(255,180,84," + a.toFixed(3) + ")";
+          ctx.fillRect(tw.x + win.x, H - tw.h + win.y, 3 + rank.depth * 2, 5 + rank.depth * 2);
+        }
+      }
+    }
+
+    var raf = 0;
+    function loop(t) { draw(t); raf = requestAnimationFrame(loop); }
+
+    resize();
+    addEventListener("resize", resize, { passive: true });
+
+    if (!still) {
+      /* Only animate while the skyline is actually on screen. It is fixed, so
+         it always is, but a backgrounded tab should not keep painting. */
+      document.addEventListener("visibilitychange", function () {
+        if (document.hidden) { cancelAnimationFrame(raf); raf = 0; }
+        else if (!raf) raf = requestAnimationFrame(loop);
+      });
+      raf = requestAnimationFrame(loop);
+    }
+  })();
 
   /* Document progress for the folio bar. */
   var docEl = document.documentElement;

@@ -46,10 +46,23 @@ const pick = (re, what) => {
   return m[0];
 };
 
+// Photographs go in as data URIs for the same reason the fonts do: nothing
+// outside this file resolves once it is published.
+const MIME = { webp: "image/webp", png: "image/png", jpg: "image/jpeg", jpeg: "image/jpeg", svg: "image/svg+xml" };
+const inlineAssets = (text) =>
+  text.replace(/(src|href)="(assets\/[^"]+)"/g, (whole, attr, rel) => {
+    const file = path.join(HERE, rel);
+    if (!fs.existsSync(file)) throw new Error(`asset referenced but missing: ${rel}`);
+    const mime = MIME[rel.split(".").pop().toLowerCase()];
+    if (!mime) throw new Error(`no mime type known for ${rel}`);
+    return `${attr}="data:${mime};base64,${fs.readFileSync(file).toString("base64")}"`;
+  });
+
 const pageCss = html.match(/<style>([\s\S]*?)<\/style>/)[1];
 const pageJs = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)].map((m) => m[1]);
+const night = pick(/<div class="night"[\s\S]*?<\/div>\s*<\/div>/, "the night layer");
 const folio = pick(/<aside class="folio"[\s\S]*?<\/aside>/, "the folio");
-const body = pick(/<main>[\s\S]*?<\/main>/, "<main>");
+const body = inlineAssets(pick(/<main>[\s\S]*?<\/main>/, "<main>"));
 
 const out = `<title>Akalade Careers</title>
 
@@ -67,6 +80,7 @@ ${read("scrollcraft.css")}
 ${pageCss}
 </style>
 
+${night}
 <div class="sc-grain" aria-hidden="true"></div>
 ${folio}
 ${body}
@@ -105,6 +119,15 @@ if (embeds !== 2) {
 }
 if (/url\(fonts\//.test(out)) problems.push("a @font-face still points at a relative path");
 if (!/ScrollCraft\.mount\(/.test(out)) problems.push("the engine is never mounted");
+if (!/class="night"/.test(out)) problems.push("the night ground is missing");
+// Scope this to the page's own markup. Scanning the whole file would also
+// read the engine's inline documentation, whose examples reference asset
+// filenames that were never meant to resolve.
+const markup = [night, folio, body].join("\n");
+const relative = [...markup.matchAll(/(?:src|href)="((?!data:|#|mailto:|tel:)[^"]+)"/g)].map((m) => m[1]);
+if (relative.length) problems.push(`unresolved relative reference(s): ${[...new Set(relative)].join(", ")}`);
+const photos = (out.match(/data:image\/webp;base64,/g) || []).length;
+if (photos < 9) problems.push(`expected at least 9 embedded photographs, found ${photos}`);
 
 if (problems.length) {
   console.error("build-standalone: refusing to write\n  " + problems.join("\n  "));

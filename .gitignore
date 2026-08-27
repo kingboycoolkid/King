@@ -29,3 +29,9 @@ package-lock.json
 .DS_Store
 Thumbs.db
 scrollcraft/builds/*/serve.log
+
+# Akalade: the untouched originals are ~86MB and one curl from the live
+# site. fetch-site-assets.sh re-downloads them; the crops in assets/img/ are
+# what the page loads and what is committed.
+scrollcraft/builds/*/assets/site/
+scrollcraft/builds/*/out/*.png

@@ -391,3 +391,115 @@ roughly 520 for a six-act generated page. Not enough to matter here, and nothing
 was spent: this is a bring-your-own-assets build, which is the right route for a
 recruiting page anyway. Generated photographs of a team that does not exist is
 exactly what this page must not do.
+
+
+---
+
+# Third pass: the brand's blue, and a city behind it
+
+Client direction, in their words: the deep blue palette, and *"I hate the bland
+scenes get something behind it like a city that doesn't sleep."*
+
+## The palette is Akalade's own
+
+`#0C1821` is not a colour I picked. It is the most-used value in the live
+site's own stylesheet, with `#2B5672` as its secondary. Both are now the page's
+foundation, and every other value is that hue at a different depth, so the page
+reads as one blue rather than as a dark theme with blue in it.
+
+| Role | Value | Note |
+|---|---|---|
+| Canvas | `#0A1420` | The night, one step under the brand navy |
+| Brand navy | `#0C1821` | Straight off the live site |
+| Steel | `#2B5672` | Their secondary, carries the horizon glow |
+| Ink | `#EAF1F8` | |
+| Ink soft | `#93A9BE` | Tinted to the canvas hue, never flat grey |
+| Accent, dark grounds | `#FFB454` | The light in a window after dark |
+| Accent, paper ground | `#8A4E05` | Same hue, second lightness, for the one light chapter |
+
+## The city is drawn, not photographed
+
+A generated skyline was ordered from kie.ai and **the generation succeeded**,
+but its result is served from `tempfile.aiquickdraw.com`, which is not in the
+network allowlist, so it could not be fetched. The URL is kept in
+`out/PENDING-CITY-URL.txt` and the page has a layer ready for it
+(`.night__photo`, driven by an `--ak-city` custom property).
+
+Rather than leave the ground bland while that resolves, the skyline is now
+**generative**: a canvas drawing three ranks of towers with lit windows,
+seeded from `20230629`, the date Akalade was incorporated, so the same skyline
+returns on every load rather than reshuffling per visit.
+
+Two things make it read as a city rather than as a pattern:
+
+- **Depth by contrast, not by blur.** The near rank is nearly black with bright
+  windows; the far rank is pale, small and sparse. The sky is *lightest at the
+  horizon*, which is how city glow actually behaves, so the towers read as
+  silhouettes against it. The first attempt had this inverted and the buildings
+  vanished into the sky.
+- **Windows go out and come back one at a time**, each on its own phase over a
+  nine second cycle. A skyline that pulses together is a Christmas light. One
+  that changes slowly, in no pattern, is a city that does not sleep.
+
+Disabled entirely under `prefers-reduced-motion`, and the animation stops when
+the tab is hidden.
+
+## A deliberate loosening of the grammar
+
+Chaptered editorial says each chapter lands on its own opaque ground. The
+chapters now cut between **densities of one continuous night** instead, with
+the city visible underneath throughout. That is a step toward continuous world
+and it is the client's call, made knowingly.
+
+The one chapter that stays fully opaque is the paper chapter, and it earns it:
+the page steps out of the dark precisely where it states the job plainly.
+
+## The photography is real now
+
+All twenty images were pulled off the live site once `static.wixstatic.com` was
+allowlisted, and every one was looked at before placement.
+
+| Slot | Photograph |
+|---|---|
+| Chapter 1 | The team in the Garden City office, in front of the plant wall |
+| Chapter 2 | A training session in progress |
+| Chapter 4 | Six of their own: the plant wall, a company night out, the corridor, a conference banner, a table after a shift, a handshake |
+| Chapter 5 | Commuters crossing a concourse, from above |
+
+**Chapter 4 changed shape.** It was four empty testimonial slots. It is now a
+rail of six real photographs of the actual team, which is what "assets that
+show the team culture" asked for, with one note still reserving room for four
+named voices. Real faces beat empty quote frames, and the quotes can land in
+the same rail when they exist.
+
+**Nothing claims to be Kevin.** The live management page carries his copy and
+no photograph of him, so no face on this page is labelled as his. Chapter 5
+uses a crowd shot and says plainly that two portraits are still needed. Guessing
+which of twenty faces belongs to the CEO is exactly the kind of error that is
+invisible to me and obvious to everybody who works there.
+
+## Verified
+
+Desktop 12.7 viewport-heights, mobile 14.3, reduced motion 12.7. No dead
+scroll, no cue that fails to peak, all cues clear 4.5:1 at their worst frame.
+
+Because the harness measures engine cues and the title copy is not one, the
+text sitting over the lit skyline was measured separately, against the
+brightest pixel actually behind each line on the composited page:
+
+| Line | Ratio |
+|---|---|
+| Title headline | 15.0:1 |
+| Title subtext | 7.2:1 |
+| Title footer meta | 7.3:1 |
+| Colophon invitation | 15.6:1 |
+
+## Still outstanding
+
+1. **The generated city**, one allowlist entry away: `tempfile.aiquickdraw.com`.
+2. **Employee quotes.** Four named voices. Unchanged.
+3. **Pay.** Still Akalade's to write.
+4. **A portrait of Kevin, and the management team.**
+
+kie.ai balance: **52 credits**, after 28 spent reaching a generation that could
+not be downloaded.
